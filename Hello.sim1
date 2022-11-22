@@ -2,16 +2,52 @@
 
 <item itemtype="MCU" CircId="mega328-145" mainComp="false" Show_id="false" Show_Val="false" Pos="-300,-492" rotation="0" hflip="1" vflip="1" label="mega328-145" idLabPos="0,-20" labelrot="0" valLabPos="-16,20" valLabRot="0" varList="DDRB" Frequency="16 MHz" Program="build/Clock.hex" Auto_Load="true" Rst_enabled="true" Ext_Osc="true" Wdt_enabled="true" />
 
-<item itemtype="Led" CircId="Led-146" mainComp="false" Show_id="false" Show_Val="false" Pos="-424,-380" rotation="-180" hflip="1" vflip="1" label="Led-146" idLabPos="-16,-24" labelrot="0" valLabPos="-16,20" valLabRot="0" Color="Yellow" Grounded="false" Threshold="2.4 V" MaxCurrent="0.03 A" Resistance="0.6 Ω" />
+<item itemtype="ResistorDip" CircId="ResistorDip-172" mainComp="false" ShowProp="Resistance" Show_id="false" Show_Val="true" Pos="-436,-452" rotation="0" hflip="1" vflip="1" label="ResistorDip-172" idLabPos="-24,-40" labelrot="0" valLabPos="5,-26" valLabRot="90" Resistance="100 Ω" Size="4 Resist." />
 
-<item itemtype="Resistor" CircId="Resistor-147" mainComp="false" ShowProp="Resistance" Show_id="false" Show_Val="true" Pos="-488,-380" rotation="0" hflip="1" vflip="1" label="Resistor-147" idLabPos="-16,-24" labelrot="0" valLabPos="-16,6" valLabRot="0" Resistance="100 Ω" />
+<item itemtype="Led" CircId="Led-173" mainComp="false" Show_id="false" Show_Val="false" Pos="-380,-500" rotation="-180" hflip="1" vflip="1" label="Led-173" idLabPos="-16,-24" labelrot="0" valLabPos="-16,20" valLabRot="0" Color="Yellow" Grounded="false" Threshold="2.4 V" MaxCurrent="0.03 A" Resistance="0.6 Ω" />
 
-<item itemtype="Ground" CircId="Ground-148" mainComp="false" Show_id="false" Show_Val="false" Pos="-556,-364" rotation="0" hflip="1" vflip="1" label="Ground-148" idLabPos="-16,8" labelrot="0" valLabPos="-16,20" valLabRot="0" />
+<item itemtype="Led" CircId="Led-174" mainComp="false" Show_id="false" Show_Val="false" Pos="-380,-476" rotation="-180" hflip="1" vflip="1" label="Led-174" idLabPos="-16,-24" labelrot="0" valLabPos="-16,20" valLabRot="0" Color="Yellow" Grounded="false" Threshold="2.4 V" MaxCurrent="0.03 A" Resistance="0.6 Ω" />
 
-<item itemtype="Connector" uid="Connector-149" startpinid="Ground-148-Gnd" endpinid="Resistor-147-lPin" pointList="-556,-380,-504,-380" />
+<item itemtype="Led" CircId="Led-175" mainComp="false" Show_id="false" Show_Val="false" Pos="-380,-452" rotation="-180" hflip="1" vflip="1" label="Led-175" idLabPos="-16,-24" labelrot="0" valLabPos="-16,20" valLabRot="0" Color="Yellow" Grounded="false" Threshold="2.4 V" MaxCurrent="0.03 A" Resistance="0.6 Ω" />
 
-<item itemtype="Connector" uid="Connector-150" startpinid="Resistor-147-rPin" endpinid="Led-146-rPin" pointList="-472,-380,-440,-380" />
+<item itemtype="Led" CircId="Led-176" mainComp="false" Show_id="false" Show_Val="false" Pos="-380,-428" rotation="-180" hflip="1" vflip="1" label="Led-176" idLabPos="-16,-24" labelrot="0" valLabPos="-16,20" valLabRot="0" Color="Yellow" Grounded="false" Threshold="2.4 V" MaxCurrent="0.03 A" Resistance="0.6 Ω" />
 
-<item itemtype="Connector" uid="Connector-151" startpinid="Led-146-lPin" endpinid="mega328-145-PORTB0" pointList="-408,-380,-308,-380" />
+<item itemtype="Ground" CircId="Ground-188" mainComp="false" Show_id="false" Show_Val="false" Pos="-452,-416" rotation="0" hflip="1" vflip="1" label="Ground-188" idLabPos="-16,8" labelrot="0" valLabPos="-16,20" valLabRot="0" />
+
+<item itemtype="Node" CircId="Node-183" mainComp="false" Pos="-452,-468" />
+
+<item itemtype="Node" CircId="Node-186" mainComp="false" Pos="-452,-460" />
+
+<item itemtype="Node" CircId="Node-191" mainComp="false" Pos="-452,-452" />
+
+<item itemtype="Connector" uid="Connector-177" startpinid="Led-173-rPin" endpinid="ResistorDip-172-resistor0-ePin1" pointList="-396,-500,-412,-500,-412,-476,-420,-476" />
+
+<item itemtype="Connector" uid="Connector-178" startpinid="Led-174-rPin" endpinid="ResistorDip-172-resistor1-ePin3" pointList="-396,-476,-404,-476,-404,-468,-420,-468" />
+
+<item itemtype="Connector" uid="Connector-179" startpinid="Led-175-rPin" endpinid="ResistorDip-172-resistor2-ePin5" pointList="-396,-452,-404,-452,-404,-460,-420,-460" />
+
+<item itemtype="Connector" uid="Connector-180" startpinid="Led-176-rPin" endpinid="ResistorDip-172-resistor3-ePin7" pointList="-396,-428,-412,-428,-412,-452,-420,-452" />
+
+<item itemtype="Connector" uid="Connector-181" startpinid="ResistorDip-172-resistor0-ePin0" endpinid="Node-183-0" pointList="-452,-476,-452,-468" />
+
+<item itemtype="Connector" uid="Connector-182" startpinid="ResistorDip-172-resistor2-ePin4" endpinid="Node-186-0" pointList="-452,-460,-452,-460" />
+
+<item itemtype="Connector" uid="Connector-184" startpinid="Node-183-2" endpinid="ResistorDip-172-resistor1-ePin2" pointList="-452,-468,-452,-468" />
+
+<item itemtype="Connector" uid="Connector-185" startpinid="ResistorDip-172-resistor3-ePin6" endpinid="Node-191-0" pointList="-452,-452,-452,-452" />
+
+<item itemtype="Connector" uid="Connector-187" startpinid="Node-186-2" endpinid="Node-183-1" pointList="-452,-460,-452,-468" />
+
+<item itemtype="Connector" uid="Connector-190" startpinid="Ground-188-Gnd" endpinid="Node-191-1" pointList="-452,-432,-452,-452" />
+
+<item itemtype="Connector" uid="Connector-192" startpinid="Node-191-2" endpinid="Node-186-1" pointList="-452,-452,-452,-460" />
+
+<item itemtype="Connector" uid="Connector-196" startpinid="mega328-145-PORTD2" endpinid="Led-173-lPin" pointList="-308,-460,-324,-460,-324,-500,-364,-500" />
+
+<item itemtype="Connector" uid="Connector-197" startpinid="mega328-145-PORTD3" endpinid="Led-174-lPin" pointList="-308,-452,-332,-452,-332,-476,-364,-476" />
+
+<item itemtype="Connector" uid="Connector-198" startpinid="mega328-145-PORTD4" endpinid="Led-175-lPin" pointList="-308,-444,-340,-444,-340,-452,-364,-452" />
+
+<item itemtype="Connector" uid="Connector-199" startpinid="mega328-145-PORTD5" endpinid="Led-176-lPin" pointList="-308,-404,-348,-404,-348,-428,-364,-428" />
 
 </circuit>
