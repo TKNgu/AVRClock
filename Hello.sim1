@@ -1,0 +1,17 @@
+<circuit version="1.0.0-RC3" rev="1148" stepSize="1000000" stepsPS="1000000" NLsteps="100000" reaStep="1000000" animate="0" >
+
+<item itemtype="MCU" CircId="mega328-145" mainComp="false" Show_id="false" Show_Val="false" Pos="-300,-492" rotation="0" hflip="1" vflip="1" label="mega328-145" idLabPos="0,-20" labelrot="0" valLabPos="-16,20" valLabRot="0" varList="DDRB" Frequency="16 MHz" Program="build/Clock.hex" Auto_Load="true" Rst_enabled="true" Ext_Osc="true" Wdt_enabled="true" />
+
+<item itemtype="Led" CircId="Led-146" mainComp="false" Show_id="false" Show_Val="false" Pos="-424,-380" rotation="-180" hflip="1" vflip="1" label="Led-146" idLabPos="-16,-24" labelrot="0" valLabPos="-16,20" valLabRot="0" Color="Yellow" Grounded="false" Threshold="2.4 V" MaxCurrent="0.03 A" Resistance="0.6 Ω" />
+
+<item itemtype="Resistor" CircId="Resistor-147" mainComp="false" ShowProp="Resistance" Show_id="false" Show_Val="true" Pos="-488,-380" rotation="0" hflip="1" vflip="1" label="Resistor-147" idLabPos="-16,-24" labelrot="0" valLabPos="-16,6" valLabRot="0" Resistance="100 Ω" />
+
+<item itemtype="Ground" CircId="Ground-148" mainComp="false" Show_id="false" Show_Val="false" Pos="-556,-364" rotation="0" hflip="1" vflip="1" label="Ground-148" idLabPos="-16,8" labelrot="0" valLabPos="-16,20" valLabRot="0" />
+
+<item itemtype="Connector" uid="Connector-149" startpinid="Ground-148-Gnd" endpinid="Resistor-147-lPin" pointList="-556,-380,-504,-380" />
+
+<item itemtype="Connector" uid="Connector-150" startpinid="Resistor-147-rPin" endpinid="Led-146-rPin" pointList="-472,-380,-440,-380" />
+
+<item itemtype="Connector" uid="Connector-151" startpinid="Led-146-lPin" endpinid="mega328-145-PORTB0" pointList="-408,-380,-308,-380" />
+
+</circuit>
