@@ -7,10 +7,11 @@ jobs:
   build:
     runs-on: ubuntu-22.04
     steps:
-      - name: Build code
-      - uses: actions/checkout@v3
-      - uses: docker://alpine:3.8
+      - name: Clone code
+        uses: actions/checkout@v3
       - name: Install tool build
+        uses: docker://alpine:3.8
+      - name: Install tool
         run: apk add gcc-avr cmake make
 
       # Runs a set of commands using the runners shell
