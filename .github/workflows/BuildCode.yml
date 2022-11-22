@@ -5,9 +5,11 @@ on:
       - "*"
 jobs:
   build:
-    runs-on: alpine
+    runs-on: ubuntu-22.04
     steps:
+      - name: Build code
       - uses: actions/checkout@v3
+      - uses: docker://alpine:3.8
       - name: Install tool build
         run: apk add gcc-avr cmake make
 
