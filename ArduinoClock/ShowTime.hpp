@@ -1,23 +1,22 @@
 #ifndef ShowTime_hpp
 #define ShowTime_hpp
 
-#include "State.hpp"
+#include "LowFrequence.hpp"
 
-class ShowTime : public State {
+class ShowTime final : public LowFrequence {
 public:
- inline ShowTime(State *&nextState) : State(nextState) {}
+ inline ShowTime(State *&nextState, State *&temperature) : LowFrequence(nextState), temperature(temperature) {}
 
 private:
- inline void resume() override {
-  setDelayTime(250);
- }
-
+ void resume() override;
  void input() override;
- inline void off() override {
-  display.pointOff();
- }
+ inline void off() override { display.pointOff(); }
 
  void on() override;
+
+private:
+ State *&temperature;
+ long int timeOutTemperature;
 };
 
 #endif

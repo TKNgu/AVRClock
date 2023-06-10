@@ -3,14 +3,14 @@
 
 #include "Arduino.h"
 #include "TTSDisplay.h"
+#include "TTSTemp.h"
 #include "TTSTime.h"
 
 class State {
 public:
+ static void Init();
  static void SetRunningState(State *);
- inline static void RunningStateLoop() {
-  State::runningState->loop();
- }
+ inline static void RunningStateLoop() { State::runningState->loop(); }
 
 protected:
  enum Key {
@@ -28,20 +28,24 @@ protected:
 
 protected:
  inline State(State *&nextState) : nextState(nextState) {}
- inline setDelayTime(long int delayTime) {
-  State::delayTime = delayTime;
- }
- inline virtual void resume(){};
+
+ inline void setDelayTime(long int delayTime) { State::delayTime = delayTime; }
+
+ inline virtual void resume() { runTime = millis(); };
+
  virtual void loop();
  inline virtual void pause(){};
 
  virtual void input();
- virtual void off() = 0;
- virtual void on() = 0;
+ virtual void update(long int);
+ inline virtual void off(){};
+
+ inline virtual void on(){};
 
 protected:
  static TTSDisplay display;
  static TTSTime time;
+ static TTSTemp temp;
 
 private:
  static State *runningState;
@@ -50,6 +54,9 @@ private:
  static bool stateKey3;
  static long int delayTime;
  static long int runTime;
+
+ static bool isBuzze;
+ static long int buzzeTimeOut;
 };
 
 #endif
