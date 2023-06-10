@@ -13,7 +13,9 @@ protected:
 
 private:
  static bool stateKey1;
+ static long int timeOutKey1;
  static bool stateKey2;
+ static long int timeOutKey2;
 };
 
 #endif
