@@ -3,15 +3,19 @@
 
 #include "LowFrequence.hpp"
 
-class Temperature : public LowFrequence {
+class Temperature final : public LowFrequence {
 public:
- Temperature(State *&nextState) : LowFrequence(nextState){};
+ inline Temperature(State *&nextState, State *&showTime) : LowFrequence(nextState), showTime(showTime) {
+  setDelayTime(250);
+ };
 
 private:
- void update(long int) override {
-  auto a = temp.get();
-  display.num(a);
- }
+ void resume() override;
+ void update(long int) override;
+
+private:
+ State *&showTime;
+ long int timeOut;
 };
 
 #endif

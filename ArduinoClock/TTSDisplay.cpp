@@ -26,22 +26,18 @@
   THE SOFTWARE.
 */
 
-#include <Arduino.h>
-#include "Streaming.h"
-
 #include "TTSDisplay.h"
 
-// 0~9,A,b,C,d,E,F,"-"," "
-const uchar TubeTab[] =
-    {
-        0x3f, 0x06, 0x5b, 0x4f,
-        0x66, 0x6d, 0x7d, 0x07,
-        0x7f, 0x6f, 0x77, 0x7c,
-        0x39, 0x5e, 0x79, 0x71,
-        0x40, 0x00};
+#include <Arduino.h>
 
-#define PINCLK 7 // pin of clk
-#define PINDTA 8 // pin of data
+#include "Streaming.h"
+
+// 0~9,A,b,C,d,E,F,"-"," "
+const uchar TubeTab[] = {0x3f, 0x06, 0x5b, 0x4f, 0x66, 0x6d, 0x7d, 0x07, 0x7f,
+                         0x6f, 0x77, 0x7c, 0x39, 0x5e, 0x79, 0x71, 0x40, 0x00};
+
+#define PINCLK 7  // pin of clk
+#define PINDTA 8  // pin of data
 
 /*********************************************************************************************************
  * Function Name: TTSDisplay
@@ -49,21 +45,40 @@ const uchar TubeTab[] =
  * Parameters: None
  * Return: None
  *********************************************************************************************************/
-TTSDisplay::TTSDisplay()
-{
+TTSDisplay::TTSDisplay() {
     Clkpin = PINCLK;
     Datapin = PINDTA;
 
     pinMode(Clkpin, OUTPUT);
     pinMode(Datapin, OUTPUT);
 
-    for (int i = 0; i < 4; i++)
-    {
+    for (int i = 0; i < 4; i++) {
         dtaDisplay[i] = 0x00;
     }
 
     set();
     // clear();
+}
+
+void TTSDisplay::raw(uchar loca, uchar dta) {
+    if (loca > 3 || loca < 0) return;
+
+    dtaDisplay[loca] = dta;
+
+    loca = 3 - loca;
+
+    start();  // start signal sent to TM1637 from MCU
+    writeByte(ADDR_FIXED);
+    stop();
+
+    start();
+    writeByte(loca | 0xc0);
+    writeByte(dta);
+    stop();
+
+    start();
+    writeByte(Cmd_Dispdisplay);
+    stop();
 }
 
 /*********************************************************************************************************
@@ -73,11 +88,8 @@ TTSDisplay::TTSDisplay()
  *             num - number to display
  * Return: None
  *********************************************************************************************************/
-void TTSDisplay::display(uchar loca, uchar dta)
-{
-
-    if (loca > 3 || loca < 0)
-        return;
+void TTSDisplay::display(uchar loca, uchar dta) {
+    if (loca > 3 || loca < 0) return;
 
     dtaDisplay[loca] = dta;
 
@@ -85,7 +97,7 @@ void TTSDisplay::display(uchar loca, uchar dta)
 
     uchar segData = coding(dta);
 
-    start(); // start signal sent to TM1637 from MCU
+    start();  // start signal sent to TM1637 from MCU
     writeByte(ADDR_FIXED);
     stop();
 
@@ -105,37 +117,28 @@ void TTSDisplay::display(uchar loca, uchar dta)
  * Parameters: num - number to display
  * Return: None
  *********************************************************************************************************/
-void TTSDisplay::num(int dta)
-{
-    if (dta < 0 || dta > 9999)
-        return; // bad data
+void TTSDisplay::num(int dta) {
+    if (dta < 0 || dta > 9999) return;  // bad data
 
     // clear();
 
     pointOff();
-    if (dta < 10)
-    {
+    if (dta < 10) {
         display(0, dta);
         display(1, 0x7f);
         display(2, 0x7f);
         display(3, 0x7f);
-    }
-    else if (dta < 100)
-    {
+    } else if (dta < 100) {
         display(1, dta / 10);
         display(0, dta % 10);
         display(2, 0x7f);
         display(3, 0x7f);
-    }
-    else if (dta < 1000)
-    {
+    } else if (dta < 1000) {
         display(2, dta / 100);
         display(1, (dta / 10) % 10);
         display(0, dta % 10);
         display(3, 0x7f);
-    }
-    else
-    {
+    } else {
         display(3, dta / 1000);
         display(2, (dta / 100) % 10);
         display(1, (dta / 10) % 10);
@@ -150,12 +153,9 @@ void TTSDisplay::num(int dta)
  *             min - minutes
  * Return: None
  *********************************************************************************************************/
-void TTSDisplay::time(uchar hour, uchar min)
-{
-    if (hour > 24 || hour < 0)
-        return; // bad data
-    if (min > 60 || min < 0)
-        return; // bad data
+void TTSDisplay::time(uchar hour, uchar min) {
+    if (hour > 24 || hour < 0) return;  // bad data
+    if (min > 60 || min < 0) return;    // bad data
 
     display(3, hour / 10);
     display(2, hour % 10);
@@ -169,8 +169,7 @@ void TTSDisplay::time(uchar hour, uchar min)
  * Parameters: None
  * Return: None
  *********************************************************************************************************/
-void TTSDisplay::clear()
-{
+void TTSDisplay::clear() {
     display(0x00, 0x7f);
     display(0x01, 0x7f);
     display(0x02, 0x7f);
@@ -183,30 +182,27 @@ void TTSDisplay::clear()
  * Parameters: wr_data: data to write
  * Return: None
  *********************************************************************************************************/
-void TTSDisplay::writeByte(uchar wr_data)
-{
+void TTSDisplay::writeByte(uchar wr_data) {
     uchar i, count1;
-    for (i = 0; i < 8; i++) // sent 8bit data
+    for (i = 0; i < 8; i++)  // sent 8bit data
     {
         digitalWrite(Clkpin, LOW);
         if (wr_data & 0x01)
-            digitalWrite(Datapin, HIGH); // LSB first
+            digitalWrite(Datapin, HIGH);  // LSB first
         else
             digitalWrite(Datapin, LOW);
         wr_data >>= 1;
         digitalWrite(Clkpin, HIGH);
     }
 
-    digitalWrite(Clkpin, LOW); // wait for the ACK
+    digitalWrite(Clkpin, LOW);  // wait for the ACK
     digitalWrite(Datapin, HIGH);
     digitalWrite(Clkpin, HIGH);
     pinMode(Datapin, INPUT);
 
-    while (digitalRead(Datapin))
-    {
+    while (digitalRead(Datapin)) {
         count1 += 1;
-        if (200 == count1)
-        {
+        if (200 == count1) {
             pinMode(Datapin, OUTPUT);
             digitalWrite(Datapin, LOW);
             count1 = 0;
@@ -222,9 +218,8 @@ void TTSDisplay::writeByte(uchar wr_data)
  * Parameters: None
  * Return: None
  *********************************************************************************************************/
-void TTSDisplay::start(void)
-{
-    digitalWrite(Clkpin, HIGH); // send start signal to TM1637
+void TTSDisplay::start(void) {
+    digitalWrite(Clkpin, HIGH);  // send start signal to TM1637
     digitalWrite(Datapin, HIGH);
     digitalWrite(Datapin, LOW);
     digitalWrite(Clkpin, LOW);
@@ -236,8 +231,7 @@ void TTSDisplay::start(void)
  * Parameters: None
  * Return: None
  *********************************************************************************************************/
-void TTSDisplay::stop(void)
-{
+void TTSDisplay::stop(void) {
     digitalWrite(Clkpin, LOW);
     digitalWrite(Datapin, LOW);
     digitalWrite(Clkpin, HIGH);
@@ -252,8 +246,7 @@ void TTSDisplay::stop(void)
  *             SetAddr - address
  * Return: None
  *********************************************************************************************************/
-void TTSDisplay::set(uchar brightness, uchar SetData, uchar SetAddr)
-{
+void TTSDisplay::set(uchar brightness, uchar SetData, uchar SetAddr) {
     _brightness = brightness;
     Cmd_SetData = SetData;
     Cmd_SetAddr = SetAddr;
@@ -266,12 +259,10 @@ void TTSDisplay::set(uchar brightness, uchar SetData, uchar SetAddr)
  * Parameters: None
  * Return: None
  *********************************************************************************************************/
-void TTSDisplay::pointOn()
-{
+void TTSDisplay::pointOn() {
     _PointFlag = 1;
 
-    for (int i = 0; i < 4; i++)
-    {
+    for (int i = 0; i < 4; i++) {
         display(i, dtaDisplay[i]);
     }
 }
@@ -282,12 +273,10 @@ void TTSDisplay::pointOn()
  * Parameters: None
  * Return: None
  *********************************************************************************************************/
-void TTSDisplay::pointOff()
-{
+void TTSDisplay::pointOff() {
     _PointFlag = 0;
 
-    for (int i = 0; i < 4; i++)
-    {
+    for (int i = 0; i < 4; i++) {
         display(i, dtaDisplay[i]);
     }
 }
@@ -298,9 +287,7 @@ void TTSDisplay::pointOff()
  * Parameters: None
  * Return: None
  *********************************************************************************************************/
-uchar TTSDisplay::coding(uchar DispData)
-{
-
+uchar TTSDisplay::coding(uchar DispData) {
     uchar PointData = _PointFlag ? 0x80 : 0x00;
     DispData = (0x7f == DispData) ? PointData : (TubeTab[DispData] + PointData);
     return DispData;

@@ -10,15 +10,13 @@ static State *minEdit;
 static State *temperature;
 
 void setup() {
- showTime = new ShowTime(hourEdit);
+ State::Init();
+ showTime = new ShowTime(hourEdit, temperature);
  hourEdit = new HourEdit(minEdit);
  minEdit = new MinEdit(showTime);
- temperature = new Temperature(showTime);
-
- State::SetRunningState(temperature);
+ temperature = new Temperature(hourEdit, showTime);
+ State::SetRunningState(showTime);
 }
 
-void loop() {
- State::RunningStateLoop();
-}
+void loop() { State::RunningStateLoop(); }
 

@@ -4,14 +4,13 @@
 #include "State.hpp"
 
 class LowFrequence : public State {
- public:
-  LowFrequence(State *&nextState) : State(nextState) {}
+public:
+ LowFrequence(State *&nextState) : State(nextState) {}
 
- private:
-  inline void resume() override {
-    setDelayTime(250);
-  }
-  void input() override;
+protected:
+ inline void resume() override { setDelayTime(250); }
+
+ void input() override;
 };
 
 #endif

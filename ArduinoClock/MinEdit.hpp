@@ -3,15 +3,13 @@
 
 #include "ValueEdit.hpp"
 
-class MinEdit : public ValueEdit {
+class MinEdit final : public ValueEdit {
 public:
  inline MinEdit(State *&nextState) : ValueEdit(nextState){};
 
 private:
  void resume() override;
- inline void pause() override {
-  time.setTime(time.getHour(), this->editMin, time.getSec());
- }
+ inline void pause() override { time.setTime(time.getHour(), this->editMin, time.getSec()); }
 
  inline void up() override {
   if (++this->editMin > 59) {

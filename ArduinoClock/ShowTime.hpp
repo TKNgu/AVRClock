@@ -3,16 +3,20 @@
 
 #include "LowFrequence.hpp"
 
-class ShowTime : public LowFrequence {
+class ShowTime final : public LowFrequence {
 public:
- inline ShowTime(State *&nextState) : LowFrequence(nextState) {}
+ inline ShowTime(State *&nextState, State *&temperature) : LowFrequence(nextState), temperature(temperature) {}
 
 private:
- inline void off() override {
-  display.pointOff();
- }
+ void resume() override;
+ void input() override;
+ inline void off() override { display.pointOff(); }
 
  void on() override;
+
+private:
+ State *&temperature;
+ long int timeOutTemperature;
 };
 
 #endif

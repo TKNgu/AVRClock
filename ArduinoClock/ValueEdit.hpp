@@ -6,6 +6,7 @@
 class ValueEdit : public State {
 protected:
  inline ValueEdit(State *&nextStete) : State(nextStete){};
+
  void input() override;
  virtual void up() = 0;
  virtual void down() = 0;
