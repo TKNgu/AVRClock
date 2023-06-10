@@ -1,5 +1,11 @@
 #include "State.hpp"
 
+#include <math.h>
+
+#define SCHEDULE_LIGHT 60
+#define LIGHT A1
+#define DELTA_RANGE_LEVEL 80
+
 #define BUZZER 6
 #define BUZZER_LEVEL 4
 #define BUZZER_TIMEOUR 45
@@ -22,6 +28,11 @@ long int State::runTime = millis();
 bool State::isBuzze = false;
 long int State::buzzeTimeOut = 0;
 long int State::lastDelayTime = 0;
+
+unsigned char State::scheduleLight = SCHEDULE_LIGHT;
+unsigned State::maxLevel = 0x0000;
+unsigned State::minLevel = 0xffff;
+unsigned State::rangeLevel = 0xffff;
 
 void State::buzzeOn() {
   if (!this->isBuzze && buzzeTimeOut < millis() + 1000) {
@@ -84,10 +95,28 @@ void State::loop() {
   if (buzzeTimeOut < startTime) {
     buzzeOff();
   }
+  if (scheduleLight++ > SCHEDULE_LIGHT) {
+    scheduleLight = 0;
+    updateLight();
+  }
   input();
   update(startTime);
   auto tmpDelayTime = delayTime - millis() + startTime;
   if (tmpDelayTime > 0) {
     delay(tmpDelayTime);
   }
+}
+
+void State::updateLight() {
+  auto light = analogRead(LIGHT);
+  if (light > maxLevel) {
+    maxLevel = light;
+    rangeLevel = maxLevel - minLevel + DELTA_RANGE_LEVEL;
+  }
+  if (light < minLevel) {
+    minLevel = light;
+    rangeLevel = maxLevel - minLevel + DELTA_RANGE_LEVEL;
+  }
+  auto tmp = light - minLevel;
+  display.set(char(char((tmp << 3) / rangeLevel)));
 }
