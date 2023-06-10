@@ -36,17 +36,19 @@
 #include "Wire.h"
 
 class TTSTime {
-   private:
-    uchar decToBcd(uchar val);
-    uchar bcdToDec(uchar val);
+private:
+ uchar decToBcd(uchar val);
+ uchar bcdToDec(uchar val);
 
-   public:
-    TTSTime() { Wire.begin(); }
-    void setTime(uchar hour, uchar min, uchar sec);     // set time
-    void getTime(uchar *hour, uchar *min, uchar *sec);  // get time
-    uchar getHour();                                    // get hour
-    uchar getMin();                                     // get minutes
-    uchar getSec();                                     // get second
+public:
+ TTSTime() { Wire.begin(); }
+ void setTime(uchar hour, uchar min, uchar sec);  // set time
+ void setTime(uchar, uchar, uchar, uchar, uchar, uchar, uchar);
+ void getTime(uchar *hour, uchar *min, uchar *sec);  // get time
+ void getTime(uchar *, uchar *, uchar *, uchar *, uchar *, uchar *, uchar *);
+ uchar getHour();  // get hour
+ uchar getMin();   // get minutes
+ uchar getSec();   // get second
 };
 
 #endif

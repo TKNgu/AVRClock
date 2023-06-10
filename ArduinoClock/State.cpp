@@ -1,7 +1,7 @@
 #include "State.hpp"
 
 #define BUZZER 6
-#define BUZZER_LEVEL 8
+#define BUZZER_LEVEL 4
 #define BUZZER_TIMEOUR 45
 #define BUZZER_DELAY 15
 
