@@ -1,19 +1,16 @@
 #ifndef State_hpp
 #define State_hpp
 
-class State
-{
+class State {
 public:
-  State(State *&state) : state(state){};
-  virtual ~State(){};
-  inline void changState(State *state)
-  {
-    this->state = state;
-  }
-  virtual void loop(long int) = 0;
+ inline State(State *&state) : state(state){};
+ virtual ~State(){};
+ virtual void resume(){};
+ inline virtual void changState(State *state) { (this->state = state)->resume(); }
+ virtual void loop() = 0;
 
 private:
-  State *&state;
+ State *&state;
 };
 
 #endif

@@ -1,22 +1,20 @@
 #ifndef BlinkState_hpp
 #define BlinkState_hpp
 
-#include "SleepState.hpp"
+#include "InputState.hpp"
 
-class BlinkState : public SleepState
-{
+class BlinkState : public InputState {
 public:
-    inline BlinkState(unsigned char delayTime = 250) : SleepState(delayTime) {}
-    virtual void showOn() = 0;
-    virtual void showOff() = 0;
-    void update(State *&) override;
+ inline BlinkState(State *&state, long int delayTime = 500)
+     : InputState(state, delayTime), isStateOn(true), startTime(0), runTime(0) {}
+ void update() override;
+ virtual void on() = 0;
+ virtual void off() = 0;
 
-public:
-    unsigned char countTime = 0;
-
-public:
-    unsigned char pointOn;
-    unsigned char pointOff;
+private:
+ bool isStateOn;
+ long int startTime;
+ long int runTime;
 };
 
 #endif
