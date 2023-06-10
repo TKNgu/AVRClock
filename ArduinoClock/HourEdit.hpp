@@ -8,10 +8,7 @@ public:
  inline HourEdit(State *&nextState) : ValueEdit(nextState) {}
 
 private:
- inline void resume() override {
-  this->editHour = time.getHour();
- }
-
+ void resume() override;
  inline void pause() override {
   time.setTime(this->editHour, time.getMin(), time.getSec());
  }

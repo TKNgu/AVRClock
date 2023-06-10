@@ -2,6 +2,7 @@
 
 TTSDisplay State::display;
 TTSTime State::time;
+TTSTemp State::temp;
 
 State *State::runningState = nullptr;
 
@@ -34,16 +35,20 @@ void State::input() {
   }
 }
 
-void State::loop() {
-  auto startTime = millis();
+void State::update(long int startTime) {
   auto delta = startTime - runTime;
-  input();
   if (delta > 1000) {
     on();
     runTime += 1000;
   } else if (delta > 500) {
     off();
   }
+}
+
+void State::loop() {
+  auto startTime = millis();
+  input();
+  update(startTime);
   auto tmpDelayTime = delayTime - millis() + startTime;
   if (tmpDelayTime > 0) {
     delay(tmpDelayTime);

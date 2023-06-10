@@ -1,5 +1,10 @@
 #include "MinEdit.hpp"
 
+void MinEdit::resume() {
+  ValueEdit::resume();
+  this->editMin = time.getMin();
+}
+
 void MinEdit::on() {
   display.time(time.getHour(), this->editMin);
   display.pointOn();

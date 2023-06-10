@@ -3,6 +3,7 @@
 
 #include "Arduino.h"
 #include "TTSDisplay.h"
+#include "TTSTemp.h"
 #include "TTSTime.h"
 
 class State {
@@ -31,17 +32,21 @@ protected:
  inline setDelayTime(long int delayTime) {
   State::delayTime = delayTime;
  }
- inline virtual void resume(){};
+ inline virtual void resume() {
+  runTime = millis();
+ };
  virtual void loop();
  inline virtual void pause(){};
 
  virtual void input();
- virtual void off() = 0;
- virtual void on() = 0;
+ virtual void update(long int);
+ inline virtual void off(){};
+ inline virtual void on(){};
 
 protected:
  static TTSDisplay display;
  static TTSTime time;
+ static TTSTemp temp;
 
 private:
  static State *runningState;
