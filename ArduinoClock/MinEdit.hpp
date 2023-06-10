@@ -4,18 +4,35 @@
 #include "ValueEdit.hpp"
 
 class MinEdit : public ValueEdit {
- public:
-  MinEdit(State *&runningState, State *&nextState) : ValueEdit(runningState, nextState){};
-  void resume() override;
-  void pause() override;
+public:
+ inline MinEdit(State *&nextState) : ValueEdit(nextState){};
 
-  void up() override;
-  void down() override;
-  void on() override;
-  void off() override;
+private:
+ inline void resume() override {
+  this->editMin = time.getMin();
+ }
 
- private:
-  char editMin;
+ inline void pause() override {
+  time.setTime(time.getHour(), this->editMin, time.getSec());
+ }
+
+ inline void up() override {
+  if (++this->editMin > 59) {
+   this->editMin = 0;
+  }
+ }
+
+ inline void down() override {
+  if (--this->editMin < 0) {
+   this->editMin = 59;
+  }
+ }
+
+ void on() override;
+ void off() override;
+
+private:
+ char editMin;
 };
 
 #endif

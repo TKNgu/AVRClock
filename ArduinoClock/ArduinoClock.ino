@@ -3,21 +3,19 @@
 #include "ShowTime.hpp"
 #include "State.hpp"
 
-State *running;
-State *showTime;
-State *hourEdit;
-State *minEdit;
+static State *showTime;
+static State *hourEdit;
+static State *minEdit;
 
 void setup() {
- showTime = new ShowTime(running, hourEdit);
- hourEdit = new HourEdit(running, minEdit);
- minEdit = new MinEdit(running, showTime);
+ showTime = new ShowTime(hourEdit);
+ hourEdit = new HourEdit(minEdit);
+ minEdit = new MinEdit(showTime);
 
- running = showTime;
- running->resume();
+ State::SetRunningState(showTime);
 }
 
 void loop() {
- running->loop();
+ State::RunningStateLoop();
 }
 

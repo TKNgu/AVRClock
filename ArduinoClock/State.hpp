@@ -7,6 +7,12 @@
 
 class State {
 public:
+ static void SetRunningState(State *);
+ inline static void RunningStateLoop() {
+  State::runningState->loop();
+ }
+
+protected:
  enum Key {
   K1 = 9,
   K2 = 10,
@@ -20,30 +26,30 @@ public:
   LED4 = 5,
  };
 
-public:
- State(State *&runningState, State *&nextState) : runningState(runningState), nextState(nextState) {}
+protected:
+ inline State(State *&nextState) : nextState(nextState) {}
  inline setDelayTime(long int delayTime) {
-  this->delayTime = delayTime;
+  State::delayTime = delayTime;
  }
- virtual void resume();
+ inline virtual void resume(){};
  virtual void loop();
- virtual void pause(){};
+ inline virtual void pause(){};
 
  virtual void input();
  virtual void off() = 0;
  virtual void on() = 0;
 
 protected:
- TTSDisplay display;
- TTSTime time;
+ static TTSDisplay display;
+ static TTSTime time;
 
 private:
- State *&runningState;
+ static State *runningState;
  State *&nextState;
 
- bool stateKey3;
- long int delayTime;
- long int runTime;
+ static bool stateKey3;
+ static long int delayTime;
+ static long int runTime;
 };
 
 #endif

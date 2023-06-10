@@ -4,12 +4,20 @@
 #include "State.hpp"
 
 class ShowTime : public State {
- public:
-  ShowTime(State *&, State *&);
-  void resume() override;
-  void input() override;
-  void off() override;
-  void on() override;
+public:
+ inline ShowTime(State *&nextState) : State(nextState) {}
+
+private:
+ inline void resume() override {
+  setDelayTime(250);
+ }
+
+ void input() override;
+ inline void off() override {
+  display.pointOff();
+ }
+
+ void on() override;
 };
 
 #endif

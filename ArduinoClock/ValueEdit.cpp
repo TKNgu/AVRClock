@@ -1,24 +1,18 @@
 #include "ValueEdit.hpp"
 
-void ValueEdit::resume() {
-  State::resume();
-  this->stateKey1 = false;
-  this->stateKey2 = false;
-}
+bool ValueEdit::stateKey1 = false;
+bool ValueEdit::stateKey2 = false;
+
+#define CHECK_KEY(KEY, STATE, CALLBACK) \
+  if (digitalRead(KEY) == LOW) {        \
+    STATE = true;                       \
+  } else if (STATE) {                   \
+    STATE = false;                      \
+    CALLBACK;                           \
+  }
 
 void ValueEdit::input() {
   State::input();
-  if (digitalRead(Key::K2) == LOW) {
-    this->stateKey2 = true;
-  } else if (this->stateKey2) {
-    this->stateKey2 = false;
-    up();
-  }
-
-  if (digitalRead(Key::K1) == LOW) {
-    this->stateKey1 = true;
-  } else if (this->stateKey1) {
-    this->stateKey1 = false;
-    down();
-  }
+  CHECK_KEY(State::Key::K1, this->stateKey1, down());
+  CHECK_KEY(State::Key::K2, this->stateKey2, up());
 }

@@ -1,22 +1,5 @@
 #include "MinEdit.hpp"
 
-void MinEdit::resume() {
-  ValueEdit::resume();
-  this->editMin = time.getMin();
-}
-
-void MinEdit::pause() {
-  time.setTime(time.getHour(), this->editMin, time.getSec());
-}
-
-void MinEdit::up() {
-  this->editMin = ++this->editMin > 59 ? 0 : this->editMin;
-}
-
-void MinEdit::down() {
-  this->editMin = --this->editMin < 0 ? 59 : this->editMin;
-}
-
 void MinEdit::on() {
   display.time(time.getHour(), this->editMin);
   display.pointOn();
