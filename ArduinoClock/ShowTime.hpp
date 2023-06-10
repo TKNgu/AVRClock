@@ -5,7 +5,9 @@
 
 class ShowTime final : public LowFrequence {
 public:
- inline ShowTime(State *&nextState, State *&temperature) : LowFrequence(nextState), temperature(temperature) {}
+ inline ShowTime(State *&nextState, State *&temperature) : LowFrequence(nextState), temperature(temperature) {
+  buzzeOn();
+ }
 
 private:
  void resume() override;

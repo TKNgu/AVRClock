@@ -1,6 +1,10 @@
 #include "State.hpp"
 
 #define BUZZER 6
+#define BUZZER_LEVEL 8
+#define BUZZER_TIMEOUR 45
+#define BUZZER_DELAY 15
+
 #define DEFAULT_DELAY 20
 #define ON_TIME_POINT 1000
 #define OFF_TIME_POINT 500
@@ -16,7 +20,24 @@ long int State::delayTime = DEFAULT_DELAY;
 long int State::runTime = millis();
 
 bool State::isBuzze = false;
-long int State::buzzeTimeOur = 0;
+long int State::buzzeTimeOut = 0;
+long int State::lastDelayTime = 0;
+
+void State::buzzeOn() {
+  if (!this->isBuzze && buzzeTimeOut < millis() + 1000) {
+    this->isBuzze = true;
+    lastDelayTime = delayTime;
+    delayTime = BUZZER_DELAY;
+    buzzeTimeOut = millis() + BUZZER_TIMEOUR;
+    analogWrite(BUZZER, BUZZER_LEVEL);
+  }
+}
+
+void State::buzzeOff() {
+  digitalWrite(BUZZER, LOW);
+  delayTime = lastDelayTime;
+  this->isBuzze = false;
+}
 
 void State::Init() {
   pinMode(Key::K1, INPUT_PULLUP);
@@ -44,6 +65,7 @@ void State::input() {
     runningState->pause();
     runningState = this->nextState;
     runningState->resume();
+    buzzeOn();
   }
 }
 
@@ -59,6 +81,9 @@ void State::update(long int startTime) {
 
 void State::loop() {
   auto startTime = millis();
+  if (buzzeTimeOut < startTime) {
+    buzzeOff();
+  }
   input();
   update(startTime);
   auto tmpDelayTime = delayTime - millis() + startTime;

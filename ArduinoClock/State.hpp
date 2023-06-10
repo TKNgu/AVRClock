@@ -31,6 +31,8 @@ protected:
 
  inline void setDelayTime(long int delayTime) { State::delayTime = delayTime; }
 
+ void buzzeOn();
+ void buzzeOff();
  inline virtual void resume() { runTime = millis(); };
 
  virtual void loop();
@@ -57,6 +59,7 @@ private:
 
  static bool isBuzze;
  static long int buzzeTimeOut;
+ static long int lastDelayTime;
 };
 
 #endif
