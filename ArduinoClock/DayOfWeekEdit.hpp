@@ -4,30 +4,30 @@
 #include "ValueEdit.hpp"
 
 class DayOfWeekEdit : public ValueEdit {
- public:
-  DayOfWeekEdit(State *&nextState) : ValueEdit(nextState) {}
+public:
+ inline DayOfWeekEdit(State *&nextState) : ValueEdit(nextState) {}
 
- private:
-  void resume() override;
-  void pause() override;
+private:
+ char editDayOfWeek;
 
-  inline void up() override {
-    if (++this->editDayOfWeek > 7) {
-      this->editDayOfWeek = 1;
-    }
+private:
+ void resume() override;
+ void pause() override;
+
+ inline void up() override {
+  if (++this->editDayOfWeek > 7) {
+   this->editDayOfWeek = 1;
   }
+ }
 
-  inline void down() override {
-    if (--this->editDayOfWeek < 1) {
-      this->editDayOfWeek = 7;
-    }
+ inline void down() override {
+  if (--this->editDayOfWeek < 1) {
+   this->editDayOfWeek = 7;
   }
+ }
 
-  void on() override;
-  inline void off() override { display.clear(); }
-
- private:
-  char editDayOfWeek;
+ void on() override;
+ inline void off() override { display.clear(); }
 };
 
 #endif

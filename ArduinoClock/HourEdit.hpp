@@ -8,8 +8,11 @@ public:
  inline HourEdit(State *&nextState) : ValueEdit(nextState) {}
 
 private:
+ char editHour;
+
+private:
  void resume() override;
- inline void pause() override { time.setTime(this->editHour, time.getMin(), time.getSec()); }
+ inline void pause() override { time.setTime(this->editHour, time.getMin(), 0); }
 
  inline void up() override {
   if (++this->editHour > 23) {
@@ -25,9 +28,6 @@ private:
 
  void on() override;
  void off() override;
-
-private:
- char editHour;
 };
 
 #endif

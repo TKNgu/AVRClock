@@ -8,8 +8,11 @@ public:
  inline MinEdit(State *&nextState) : ValueEdit(nextState){};
 
 private:
+ char editMin;
+
+private:
  void resume() override;
- inline void pause() override { time.setTime(time.getHour(), this->editMin, time.getSec()); }
+ inline void pause() override { time.setTime(time.getHour(), this->editMin, 0); }
 
  inline void up() override {
   if (++this->editMin > 59) {
@@ -25,9 +28,6 @@ private:
 
  void on() override;
  void off() override;
-
-private:
- char editMin;
 };
 
 #endif

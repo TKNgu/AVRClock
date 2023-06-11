@@ -30,21 +30,20 @@ protected:
  static TTSDisplay display;
  static TTSTime time;
  static TTSTemp temp;
+ static bool onLed;
 
 protected:
  inline State(State *&nextState) : nextState(nextState) {}
-
- inline void setDelayTime(long int delayTime) { State::delayTime = delayTime; }
-
- void buzzeOn();
+ void setDelayTime(unsigned long);
+ void buzzeOn(unsigned long);
  void buzzeOff();
- inline virtual void resume() { runTime = millis(); };
+ inline virtual void resume() { pointTime = millis(); };
 
  virtual void loop();
  inline virtual void pause(){};
 
- virtual void input();
- virtual void update(long int);
+ virtual void input(unsigned long);
+ virtual void update(unsigned long);
  inline virtual void off(){};
 
  inline virtual void on(){};
@@ -54,17 +53,19 @@ private:
  State *&nextState;
 
  static bool stateKey3;
- static long int delayTime;
- static long int runTime;
+ static unsigned long delayTime;
+ static unsigned long pointTime;
+ static bool isOn;
+ static unsigned char stateLoop;
 
  static bool isBuzze;
- static long int buzzeTimeOut;
- static long int lastDelayTime;
+ static unsigned long buzzeTimeOut;
+ static unsigned long lastDelayTime;
 
- static unsigned char scheduleLight;
- static unsigned maxLevel;
- static unsigned minLevel;
- static unsigned rangeLevel;
+ static char scheduleLight;
+ static int maxLevel;
+ static int minLevel;
+ static int rangeLevel;
 
 private:
  void updateLight();

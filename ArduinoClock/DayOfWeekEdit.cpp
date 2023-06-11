@@ -17,8 +17,8 @@ void DayOfWeekEdit::pause() {
 
 void DayOfWeekEdit::on() {
   if (this->editDayOfWeek == 1) {
-    display.raw(0, 0b00111110);
-    display.raw(1, 0b00110111);
+    display.raw(0, 0b00110111);
+    display.raw(1, 0b00111110);
     display.raw(2, 0b01101101);
     display.raw(3, 0x00);
   } else {
