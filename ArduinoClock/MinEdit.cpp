@@ -11,7 +11,7 @@ void MinEdit::on() {
 }
 
 void MinEdit::off() {
-  auto tmp = time.getHour();
+  unsigned char tmp = time.getHour();
   display.display(0, 0x7f);
   display.display(1, 0x7f);
   display.display(2, tmp % 10);
