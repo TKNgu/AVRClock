@@ -8,7 +8,7 @@ public:
  LowFrequence(State *&nextState) : State(nextState) {}
 
 protected:
- inline void resume() override { setDelayTime(250); }
+ inline void resume() override { setDelayTime(50); }
 
  void input() override;
 };

@@ -16,7 +16,7 @@ long int State::delayTime = DEFAULT_DELAY;
 long int State::runTime = millis();
 
 bool State::isBuzze = false;
-long int State::buzzeTimeOur = 0;
+long int State::buzzeTimeOut = 0;
 
 void State::Init() {
   pinMode(Key::K1, INPUT_PULLUP);
@@ -29,6 +29,8 @@ void State::Init() {
   pinMode(Led::LED4, OUTPUT);
 
   pinMode(BUZZER, OUTPUT);
+
+  Serial.begin(9600);
 }
 
 void State::SetRunningState(State *runningState) {
@@ -50,18 +52,25 @@ void State::input() {
 void State::update(long int startTime) {
   auto delta = startTime - runTime;
   if (delta > ON_TIME_POINT) {
+    Serial.println("On");
     on();
     runTime += ON_TIME_POINT;
   } else if (delta > OFF_TIME_POINT) {
+    Serial.println("Off");
     off();
   }
 }
 
 void State::loop() {
+  Serial.println("Loop");
   auto startTime = millis();
+  Serial.println(startTime);
+  Serial.println("Input");
   input();
+  Serial.println("Update");
   update(startTime);
   auto tmpDelayTime = delayTime - millis() + startTime;
+  Serial.println("Delay");
   if (tmpDelayTime > 0) {
     delay(tmpDelayTime);
   }
