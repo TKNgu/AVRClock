@@ -50,6 +50,8 @@ void State::Init() {
   pinMode(BUZZER_DEVICE, OUTPUT);
 
   display.clear();
+
+  Serial.begin(9600)
 }
 
 void State::setDelayTime(unsigned long delayTime) {
@@ -82,6 +84,7 @@ void State::SetRunningState(State *runningState) {
 }
 
 void State::input(unsigned long timeNow) {
+  Serial.println("Input");
   if (buzzeTimeOut < timeNow && isBuzze) {
     buzzeOff();
   }
@@ -99,6 +102,7 @@ void State::input(unsigned long timeNow) {
 }
 
 void State::update(unsigned long startTime) {
+  Serial.println("Update");
   if (scheduleLight++ > SCHEDULE_LIGHT) {
     scheduleLight = 0;
     updateLight();
@@ -108,6 +112,8 @@ void State::update(unsigned long startTime) {
 }
 
 void State::loop() {
+  Serial.println("**********************************");
+  Serial.println("Loop");
   unsigned long timeNow = millis();
   input(timeNow);
   if (pointTime < timeNow) {
@@ -118,6 +124,7 @@ void State::loop() {
     } while ((delta -= TIME_POINT) > 0);
   }
   long tmpDelayTime = delayTime + timeNow - millis();
+  Serial.println("Delay");
   if (tmpDelayTime > 0) {
     delay(tmpDelayTime);
   }
