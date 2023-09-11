@@ -1,24 +1,20 @@
+#include "DayOfWeekEdit.hpp"
 #include "HourEdit.hpp"
 #include "MinEdit.hpp"
 #include "ShowTime.hpp"
 #include "State.hpp"
-#include "Temperature.hpp"
 
 static State *showTime;
 static State *hourEdit;
 static State *minEdit;
-static State *temperature;
+static State *dayOfWeekEdit;
 
 void setup() {
- showTime = new ShowTime(hourEdit);
- hourEdit = new HourEdit(minEdit);
- minEdit = new MinEdit(showTime);
- temperature = new Temperature(showTime);
-
- State::SetRunningState(temperature);
+    State::Init(showTime = new ShowTime(
+                    hourEdit = new HourEdit(
+                        minEdit = new MinEdit(
+                            dayOfWeekEdit = new DayOfWeekEdit(showTime)))));
 }
 
-void loop() {
- State::RunningStateLoop();
-}
+void loop() { State::RunningStateLoop(); }
 

@@ -1,20 +1,15 @@
 #include "MinEdit.hpp"
 
-void MinEdit::resume() {
-  ValueEdit::resume();
-  this->editMin = time.getMin();
-}
-
 void MinEdit::on() {
-  display.time(time.getHour(), this->editMin);
-  display.pointOn();
+  clockShield.showTime(clockShield.getHour(), this->editMin);
+  clockShield.pointOn();
 }
 
 void MinEdit::off() {
-  auto tmp = time.getHour();
-  display.display(0, 0x7f);
-  display.display(1, 0x7f);
-  display.display(2, tmp % 10);
-  display.display(3, tmp / 10);
-  display.pointOff();
+  unsigned char tmp = clockShield.getHour();
+  clockShield.show(0, 0x7f);
+  clockShield.show(1, 0x7f);
+  clockShield.show(2, tmp % 10);
+  clockShield.show(3, tmp / 10);
+  clockShield.pointOff();
 }

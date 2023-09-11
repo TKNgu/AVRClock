@@ -1,18 +1,47 @@
 #ifndef ShowTime_hpp
 #define ShowTime_hpp
 
-#include "LowFrequence.hpp"
+#include "State.hpp"
 
-class ShowTime : public LowFrequence {
+class ShowTime final : public State {
 public:
- inline ShowTime(State *&nextState) : LowFrequence(nextState) {}
+ ShowTime(State *&);
+ inline ~ShowTime() { delete[] this->schedules; }
 
 private:
- inline void off() override {
-  display.pointOff();
- }
+ struct Schedule {
+  unsigned char dayOfWeek;
+  unsigned char hour;
+  unsigned char min;
+  unsigned value;
+ };
 
- void on() override;
+private:
+ unsigned long timeOutCheckTemp;
+ unsigned long timeOutShowTemp;
+ int temperature;
+
+ unsigned char hour;
+ unsigned char min;
+ unsigned char sec;
+ unsigned char dayOfWeek;
+ unsigned char tmp;
+
+ Schedule *nextSchedule;
+ unsigned char indexSchedule;
+ Schedule *schedules;
+ const unsigned char schedulesSize;
+
+private:
+ void resume() override;
+ void update(unsigned long) override;
+ inline void off() override { clockShield.pointOff(); }
+ inline void on() override {
+  if (onLed) {
+   clockShield.pointOn();
+  }
+ }
+ void showTemperature();
 };
 
 #endif

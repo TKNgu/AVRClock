@@ -3,14 +3,17 @@
 
 #include "ValueEdit.hpp"
 
-class MinEdit : public ValueEdit {
+class MinEdit final : public ValueEdit {
 public:
  inline MinEdit(State *&nextState) : ValueEdit(nextState){};
 
 private:
- void resume() override;
- inline void pause() override {
-  time.setTime(time.getHour(), this->editMin, time.getSec());
+ char editMin;
+
+private:
+ inline void readState() override { this->editMin = clockShield.getMin(); }
+ inline void writeState() override {
+  clockShield.setTime(clockShield.getHour(), this->editMin, 0);
  }
 
  inline void up() override {
@@ -27,9 +30,6 @@ private:
 
  void on() override;
  void off() override;
-
-private:
- char editMin;
 };
 
 #endif
