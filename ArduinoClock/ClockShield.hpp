@@ -1,9 +1,9 @@
 #ifndef ClockShield_hpp
 #define ClockShield_hpp
 
-#include "TTSDisplay.h"
-#include "TTSTemp.h"
-#include "TTSTime.h"
+#include "src/TTSDisplay.h"
+#include "src/TTSTemp.h"
+#include "src/TTSTime.h"
 
 #define BUZZER_DEVICE 6
 #define BUZZER tone(BUZZER_DEVICE, 2400, 60);

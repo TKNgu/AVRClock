@@ -14,6 +14,11 @@ class Schedule {
           hour(hour),
           minutes(minutes),
           value((dayOfWeek << 11) + (hour << 6) + minutes) {}
+    inline static unsigned CalculatorValue(unsigned char dayOfWeek,
+                                           unsigned char hour,
+                                           unsigned char minutes) {
+      return (dayOfWeek << 11) + (hour << 6) + minutes;
+    }
   };
 
  public:

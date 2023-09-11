@@ -39,24 +39,25 @@ Schedule::Schedule()
 
 void Schedule::resetPoint(unsigned char dayOfWeek, unsigned char hour,
                           unsigned char minutes) {
-  unsigned value = (dayOfWeek << 11) + (hour << 6) + minutes;
+  unsigned value = TimePoint::CalculatorValue(dayOfWeek, hour, minutes);
   for (this->indexSchedule = 0; this->indexSchedule < this->schedulesSize;
        this->indexSchedule++) {
     if (value < this->schedules[this->indexSchedule].value) {
       break;
     }
   }
-  this->indexSchedule %= this->schedulesSize;
-  this->nextSchedule = this->schedules + this->indexSchedule;
+  this->nextSchedule =
+      this->schedules + (this->indexSchedule %= this->schedulesSize);
 }
 
 bool Schedule::checkPoint(unsigned char dayOfWeek, unsigned char hour,
                           unsigned char minutes) {
-  if (this->nextSchedule->value != (dayOfWeek << 11) + (hour << 6) + minutes) {
+  if (this->nextSchedule->value !=
+      TimePoint::CalculatorValue(dayOfWeek, hour, minutes)) {
     return false;
   }
-  this->indexSchedule++;
-  this->indexSchedule %= this->schedulesSize;
-  this->nextSchedule = this->schedules + this->indexSchedule;
+  this->nextSchedule =
+      this->schedules +
+      (this->indexSchedule = ((this->indexSchedule + 1) % this->schedulesSize));
   return true;
 }
