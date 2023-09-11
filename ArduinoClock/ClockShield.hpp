@@ -6,6 +6,8 @@
 #include "TTSTime.h"
 
 #define BUZZER_DEVICE 6
+#define BUZZER tone(BUZZER_DEVICE, 2400, 60);
+// #define BUZZER
 
 class ClockShield {
 public:
