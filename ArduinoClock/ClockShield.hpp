@@ -1,15 +1,17 @@
 #ifndef ClockShield_hpp
 #define ClockShield_hpp
 
-#include "TTSDisplay.h"
-#include "TTSTemp.h"
-#include "TTSTime.h"
+#include "src/lib/TTSDisplay.h"
+#include "src/lib/TTSTemp.h"
+#include "src/lib/TTSTime.h"
 
 #define BUZZER_DEVICE 6
 
 class ClockShield {
 public:
  ClockShield();
+
+ // Time
  inline uchar getHour() { return this->time.getHour(); }
  inline uchar getMin() { return this->time.getMin(); }
  void getTime(uchar *hour, uchar *min, uchar *sec, uchar *dayOfWeek,
@@ -23,19 +25,22 @@ public:
  inline void setTime(uchar hour, uchar min, uchar sec) {
   this->time.setTime(hour, min, sec);
  }
+
+ // Led 7 segment
+ inline void raw(uchar local, uchar data) { this->display.raw(local, data); }
  inline void show(uchar local, uchar data) {
   this->display.display(local, data);
  }
- inline void num(int num) { this->display.num(num); }
- inline void raw(uchar local, uchar data) { this->display.raw(local, data); }
- inline void showTime(uchar hour, uchar min) { this->display.time(hour, min); }
  inline void pointOn() { this->display.pointOn(); }
  inline void pointOff() { this->display.pointOff(); }
+ inline void num(int num) { this->display.num(num); }
+ inline void showTime(uchar hour, uchar min) { this->display.time(hour, min); }
  inline void set(uchar level, uchar local = 0x40, uchar data = 0xc0) {
   this->display.set(level, local, data);
  }
  inline void clear() { this->display.clear(); }
 
+ // Button
  inline bool isMenu() { return digitalRead(Key::K3) == LOW; }
  inline int getTem() { return this->temp.get(); }
  inline bool digitalReadDown() { return digitalRead(Key::K1) == LOW; }

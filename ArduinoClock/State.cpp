@@ -44,6 +44,7 @@ void State::Init(State *initState) {
 }
 
 void State::SetRunningState(State *runningState) {
+  State::runningState->pause();
   State::runningState = runningState;
   State::runningState->resume();
 }
@@ -55,11 +56,12 @@ void State::input(unsigned long timeNow) {
     }
     stateKey3 = true;
   } else if (stateKey3) {
-    tone(BUZZER_DEVICE, 2400, 60);
+    // tone(BUZZER_DEVICE, 2400, 60);
     stateKey3 = false;
-    runningState->pause();
-    runningState = this->nextState;
-    runningState->resume();
+    SetRunningState(this->nextState);
+    // runningState->pause();
+    // runningState = this->nextState;
+    // runningState->resume();
   }
 }
 
@@ -68,8 +70,7 @@ void State::update(unsigned long startTime) {
     scheduleLight = 0;
     updateLight();
   }
-  isOn = !isOn;
-  isOn ? on() : off();
+  (isOn = !isOn) ? on() : off();
 }
 
 void State::loop() {
