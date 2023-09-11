@@ -7,32 +7,21 @@
 class ShowTime final : public State {
 public:
  ShowTime(State *&);
+ inline ~ShowTime() { delete[] this->schedule.schedules; }
 
 private:
- // struct Schedule {
- //  unsigned char dayOfWeek;
- //  unsigned char hour;
- //  unsigned char min;
- //  unsigned value;
- // };
-
 private:
  unsigned long timeOutCheckTemp;
  unsigned long timeOutShowTemp;
  int temperature;
 
  unsigned char hour;
- unsigned char min;
+ unsigned char minutes;
  unsigned char sec;
  unsigned char dayOfWeek;
  unsigned char tmp;
 
  Schedule schedule;
-
- // Schedule *nextSchedule;
- // unsigned char indexSchedule;
- // Schedule *schedules;
- // const unsigned char schedulesSize;
 
 private:
  void resume() override;

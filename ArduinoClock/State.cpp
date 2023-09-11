@@ -56,12 +56,9 @@ void State::input(unsigned long timeNow) {
     }
     stateKey3 = true;
   } else if (stateKey3) {
-    // tone(BUZZER_DEVICE, 2400, 60);
+    BUZZER
     stateKey3 = false;
     SetRunningState(this->nextState);
-    // runningState->pause();
-    // runningState = this->nextState;
-    // runningState->resume();
   }
 }
 

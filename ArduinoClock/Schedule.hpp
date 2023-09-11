@@ -2,31 +2,35 @@
 #define Schedule_hpp
 
 class Schedule {
-public:
- struct TimePoint {
-  unsigned char dayOfWeek;
-  unsigned char hour;
-  unsigned char minutes;
-  unsigned value;
-  TimePoint(unsigned char dayOfWeek = 2u, unsigned char hour = 0u,
-            unsigned char minutes = 0u)
-      : dayOfWeek(dayOfWeek),
-        hour(hour),
-        minutes(minutes),
-        value((dayOfWeek << 11) + (hour << 6) + minutes) {}
- };
+ public:
+  struct TimePoint {
+    unsigned char dayOfWeek;
+    unsigned char hour;
+    unsigned char minutes;
+    unsigned value;
+    TimePoint(unsigned char dayOfWeek = 0u, unsigned char hour = 0u,
+              unsigned char minutes = 0u)
+        : dayOfWeek(dayOfWeek),
+          hour(hour),
+          minutes(minutes),
+          value((dayOfWeek << 11) + (hour << 6) + minutes) {}
+    inline static unsigned CalculatorValue(unsigned char dayOfWeek,
+                                           unsigned char hour,
+                                           unsigned char minutes) {
+      return (dayOfWeek << 11) + (hour << 6) + minutes;
+    }
+  };
 
-public:
- Schedule();
- inline ~Schedule() { delete[] this->timePoints; }
- void resetTimePoint(const TimePoint &);
- bool checkTimePoint(unsigned char, unsigned char, unsigned char);
+ public:
+  TimePoint *nextSchedule;
+  unsigned char indexSchedule;
+  TimePoint *schedules;
+  const unsigned char schedulesSize;
 
-private:
- TimePoint *nextTimePoint;
- unsigned char indexTimePoint;
- TimePoint *timePoints;
- const unsigned char timePointSize;
+ public:
+  Schedule();
+  void resetPoint(unsigned char, unsigned char, unsigned char);
+  bool checkPoint(unsigned char, unsigned char, unsigned char);
 };
 
 #endif
