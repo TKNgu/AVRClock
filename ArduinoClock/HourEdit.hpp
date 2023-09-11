@@ -11,8 +11,10 @@ private:
  char editHour;
 
 private:
- void resume() override;
- inline void pause() override { time.setTime(this->editHour, time.getMin(), 0); }
+ inline void readState() override { this->editHour = clockShield.getHour(); }
+ inline void writeState() override {
+  clockShield.setTime(this->editHour, clockShield.getMin(), 0);
+ }
 
  inline void up() override {
   if (++this->editHour > 23) {

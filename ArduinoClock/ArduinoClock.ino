@@ -10,12 +10,10 @@ static State *minEdit;
 static State *dayOfWeekEdit;
 
 void setup() {
- State::Init();
- showTime = new ShowTime(hourEdit);
- hourEdit = new HourEdit(minEdit);
- minEdit = new MinEdit(dayOfWeekEdit);
- dayOfWeekEdit = new DayOfWeekEdit(showTime);
- State::SetRunningState(showTime);
+    State::Init(showTime = new ShowTime(
+                    hourEdit = new HourEdit(
+                        minEdit = new MinEdit(
+                            dayOfWeekEdit = new DayOfWeekEdit(showTime)))));
 }
 
 void loop() { State::RunningStateLoop(); }

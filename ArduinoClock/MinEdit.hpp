@@ -11,8 +11,10 @@ private:
  char editMin;
 
 private:
- void resume() override;
- inline void pause() override { time.setTime(time.getHour(), this->editMin, 0); }
+ inline void readState() override { this->editMin = clockShield.getMin(); }
+ inline void writeState() override {
+  clockShield.setTime(clockShield.getHour(), this->editMin, 0);
+ }
 
  inline void up() override {
   if (++this->editMin > 59) {

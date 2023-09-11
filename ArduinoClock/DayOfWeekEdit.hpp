@@ -11,8 +11,8 @@ private:
  char editDayOfWeek;
 
 private:
- void resume() override;
- void pause() override;
+ void readState() override;
+ void writeState() override;
 
  inline void up() override {
   if (++this->editDayOfWeek > 7) {
@@ -27,7 +27,7 @@ private:
  }
 
  void on() override;
- inline void off() override { display.clear(); }
+ inline void off() override { clockShield.clear(); }
 };
 
 #endif
