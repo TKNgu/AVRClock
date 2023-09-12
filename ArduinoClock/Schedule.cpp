@@ -10,7 +10,7 @@ Schedule::Schedule()
     this->schedules[index++] = {indexDay, 9, 00};
     this->schedules[index++] = {indexDay, 9, 15};
     this->schedules[index++] = {indexDay, 10, 00};
-    this->schedules[index++] = {indexDay, 11, 58};
+    this->schedules[index++] = {indexDay, 11, 59};
     this->schedules[index++] = {indexDay, 12, 30};
     this->schedules[index++] = {indexDay, 13, 00};
     this->schedules[index++] = {indexDay, 14, 00};
