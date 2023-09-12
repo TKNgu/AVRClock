@@ -26,7 +26,7 @@ Schedule::Schedule()
   this->schedules[index++] = {7, 7, 30};
   this->schedules[index++] = {7, 8, 00};
   this->schedules[index++] = {7, 10, 00};
-  this->schedules[index++] = {7, 11, 58};
+  this->schedules[index++] = {7, 11, 59};
   this->schedules[index++] = {7, 13, 00};
   this->schedules[index++] = {7, 15, 00};
   this->schedules[index++] = {7, 17, 00};
