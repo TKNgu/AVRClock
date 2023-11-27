@@ -15,7 +15,7 @@ void ShowTime::resume() {
 void ShowTime::update(unsigned long timeNow) {
   clockShield.getTime(&this->hour, &this->minutes, &this->sec, &this->dayOfWeek,
                       &this->tmp, &this->tmp, &this->tmp);
-  if (!(onLed = this->hour < 22 && this->hour >= 5)) {
+  if (!(onLed = this->hour < 23 && this->hour >= 5)) {
     clockShield.clear();
     clockShield.pointOff();
     return;
