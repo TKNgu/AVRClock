@@ -34,6 +34,8 @@ int State::maxLevel = 0xff;
 int State::minLevel = 0xf0;
 int State::rangeLevel = 0xffff;
 
+unsigned char State::lightLevel = 0x00;
+
 void State::setDelayTime(unsigned long delayTime) {
   State::delayTime = delayTime;
 }
@@ -90,12 +92,14 @@ void State::updateLight() {
   int light = analogRead(LIGHT);
   if (light < minLevel) {
     minLevel = light;
-    rangeLevel = maxLevel + DELTA_RANGE_LEVEL - minLevel;
   }
   if (light > maxLevel) {
     maxLevel = light;
-    rangeLevel = maxLevel + DELTA_RANGE_LEVEL - minLevel;
   }
-  int tmp = light - minLevel;
-  clockShield.set(char(char((tmp << 3) / rangeLevel)));
+  unsigned char tmp =
+      (unsigned char)((light - minLevel) * 5.0f / (maxLevel - minLevel));
+  if (tmp != lightLevel) {
+    lightLevel = tmp;
+    clockShield.set(lightLevel);
+  }
 }
