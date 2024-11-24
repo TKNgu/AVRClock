@@ -13,10 +13,11 @@ static unsigned char min;
 static bool view;
 static unsigned long lastUpdate;
 
-void HourEditInit() {
+void HourEditReload() {
     lastUpdate = millis();
     unsigned char sec;
     GetTime(&hour, &min, &sec);
+    Buzzer();
 }
 
 void UpHour() {
@@ -62,51 +63,36 @@ void DowHourLong() {
 }
 
 void SaveHour() {
+    unsigned char tmp;
+    GetTime(&tmp, &min, &tmp);
     SetTime(hour, min);
-    ChangState(MinEditInit, MinEditLoop);
+    ChangState(MinEditReload, MinEditLoop);
+    Buzzer();
+}
+
+void SaveHourSkip() {
+    unsigned char tmp;
+    GetTime(&tmp, &min, &tmp);
+    SetTime(hour, min);
+    ChangState(ClockReload, ClockLoop);
+    Buzzer();
 }
 
 void HourEditLoop() {
     unsigned long startTime = millis();
 
-    static bool viewHour = false;
-    static Timer timerView = {
-        .leng = 500,
-        .nextTime = 0,
-    };
-
-    static Button up = {
-        .key = Key::k2,
-        .click = false,
-        .shortFn = UpHour,
-        .longFn = UpHourLong,
-        .time = startTime,
-        .isLongPress = false,
-    };
-
-    static Button down = {
-        .key = Key::k1,
-        .click = false,
-        .shortFn = DowHour,
-        .longFn = DowHourLong,
-        .time = startTime,
-        .isLongPress = false,
-    };
-
-    static Button save = {
-        .key = Key::k3,
-        .click = false,
-        .shortFn = SaveHour,
-        .longFn = NOP,
-        .time = startTime,
-        .isLongPress = false,
-    };
-
+    static Button up = CreateButtonLongPress(Key::k2, UpHour, UpHourLong);
     ButtonScan(&up);
+
+    static Button down = CreateButtonLongPress(Key::k1, DowHour, DowHourLong);
     ButtonScan(&down);
+
+    static Button save = CreateButton(Key::k3, SaveHour);
     ButtonScan(&save);
 
+    static Timer timerView = CreateTimer(500);
     if (TimerTimeoutFix(&timerView, startTime)) {
+        static bool viewHour = false;
         viewHour = !viewHour;
         if (view) {
             view = false;
@@ -123,7 +109,7 @@ void HourEditLoop() {
     }
 
     if (lastUpdate + CANCLE_TIME <= startTime) {
-        ChangState(ClockInit, ClockLoop);
+        ChangState(ClockReload, ClockLoop);
     }
 
     delay(SLEEP_TIME - millis() + startTime);

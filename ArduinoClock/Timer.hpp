@@ -8,6 +8,7 @@ typedef struct {
     unsigned long nextTime;
 } Timer;
 
+Timer CreateTimer(unsigned long leng);
 bool TimerTimeoutFix(Timer *timer, unsigned long timeNow);
 bool TimerTimeout(Timer *timer);
 

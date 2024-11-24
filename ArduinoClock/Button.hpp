@@ -16,6 +16,9 @@ typedef struct {
     bool isLongPress;
 } Button;
 
+Button CreateButton(const Key key, void (*shortFn)(void));
+Button CreateButtonLongPress(const Key key, void (*shortFn)(void), void (*longFn)(void));
+
 void ButtonInit(Button *button, void (*shortFn)(void), void (*longFn)(void));
 void ButtonScan(Button *button);
 void NOP();

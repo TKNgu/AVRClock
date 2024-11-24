@@ -30,6 +30,8 @@ void GetDateTime(unsigned char *hour, unsigned char *min, unsigned char *sec,
 void SetDateTime(const unsigned char hour, const unsigned char min, const unsigned char sec,
     const unsigned char dayOfWeek,
     const unsigned char dayOfMonth, const unsigned char month, const unsigned char year);
+void GetDayOfWeek(unsigned char *dayOfWeek);
+void SetDayOfWeek(const unsigned char dayOfWeek);
 
 void Clear();
 void SetLightLevel(unsigned char level);
@@ -40,6 +42,7 @@ void ShowTemperature(int temperature);
 void ShowDayOfWeek(const unsigned char dayOfWeek);
 void ShowHour(const unsigned char hour);
 void ShowMin(const unsigned char min);
+void ShowNum(int num);
 
 bool ReadKey(const Key key);
 void LedOn(const Led led);

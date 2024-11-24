@@ -2,6 +2,28 @@
 #include "Utils.hpp"
 #include "Arduino.h"
 
+Button CreateButton(const Key key, void (*shortFn)(void)) {
+    return Button {
+        .key = key,
+        .click = false,
+        .shortFn = shortFn,
+        .longFn = NOP,
+        .time = 0,
+        .isLongPress = false,
+    };
+}
+
+Button CreateButtonLongPress(const Key key, void (*shortFn)(void), void (*longFn)(void)) {
+    return Button {
+        .key = key,
+        .click = false,
+        .shortFn = shortFn,
+        .longFn = longFn,
+        .time = 0,
+        .isLongPress = false,
+    };
+}
+
 void ButtonInit(Button *button, Key key, void (*shortFn)(void), void (*longFn)(void)) {
     button->key = key;
     button->click = false;

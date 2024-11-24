@@ -13,10 +13,11 @@ static unsigned char min;
 static bool view;
 static unsigned long lastUpdate;
 
-void MinEditInit() {
+void MinEditReload() {
     lastUpdate = millis();
     unsigned char sec;
     GetTime(&hour, &min, &sec);
+    Buzzer();
 }
 
 void UpMin() {
@@ -64,43 +65,17 @@ void DowMinLong() {
 void SaveMin() {
     SetTime(hour, min);
     ChangState(ClockInit, ClockLoop);
+    Buzzer();
 }
 
 void MinEditLoop() {
     unsigned long startTime = millis();
 
     static bool viewHour = false;
-    static Timer timerView = {
-        .leng = 500,
-        .nextTime = 0,
-    };
-
-    static Button up = {
-        .key = Key::k2,
-        .click = false,
-        .shortFn = UpMin,
-        .longFn = UpMinLong,
-        .time = startTime,
-        .isLongPress = false,
-    };
-
-    static Button down = {
-        .key = Key::k1,
-        .click = false,
-        .shortFn = DowMin,
-        .longFn = DowMinLong,
-        .time = startTime,
-        .isLongPress = false,
-    };
-
-    static Button save = {
-        .key = Key::k3,
-        .click = false,
-        .shortFn = SaveMin,
-        .longFn = NOP,
-        .time = startTime,
-        .isLongPress = false,
-    };
+    static Timer timerView = CreateTimer(500);
+    static Button up = CreateButtonLongPress(Key::k2, UpMin, UpMinLong);
+    static Button down = CreateButtonLongPress(Key::k1, DowMin, DowMinLong);
+    static Button save = CreateButton(Key::k3, SaveMin);
 
     ButtonScan(&up);
     ButtonScan(&down);

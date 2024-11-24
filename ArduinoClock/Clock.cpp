@@ -8,74 +8,20 @@
 #include "Timer.hpp"
 #include "Button.hpp"
 
-
-void ChangState(void (*init)(void), void (*loop)(void)) {
-    init();
-    StateLoop = loop;
-    Buzzer();
-}
-
 #define SLEEP_TIME 50
 #define SCHEDULE_SIZE 14
 #define TIME_VIEW_TEMP 2000
 #define TIME_VIEW_TIME 7000
 
-static Timer timerCheckSchedule = {
-    .leng = 60,
-    .nextTime = 0,
-};
 static TimePoint schedule[SCHEDULE_SIZE];
 static size_t indexSchedule;
 static TimePoint nextTimePoint;
-static unsigned lastMin;
-
-static Timer timerCheckTemp = {
-    .leng = 10,
-    .nextTime = 0,
-};
-static int temp;
-static bool needShowTemp;
-
-static Timer timerPoint = {
-    .leng = 750,
-    .nextTime = 0,
-};
-static bool needShowPoint = false;
-
-static Timer timerUpdateTime = {
-    .leng = 1000,
-    .nextTime = 0,
-};
-static unsigned char hour;
-static unsigned char min;
-static unsigned char sec;
-
-static Timer timerAutoLight = {
-    .leng = 5000,
-    .nextTime = 0,
-};
-
-typedef enum StateView {
-    viewTemp,
-    viewTime,
-};
-static StateView stateView = StateView::viewTime;
-static unsigned long timerStateView = 0;
-
-void MenuClick() {
-    ChangState(HourEditInit, HourEditLoop);
-}
-
-static Button menuButton = {
-    .key = Key::k3,
-    .click = false,
-    .shortFn = MenuClick,
-    .longFn = NOP,
-    .time = 0,
-    .isLongPress = false,
-};
 
 void (*StateLoop)(void) = ClockLoop;
+void ChangState(void (*reload)(void), void (*loop)(void)) {
+    reload();
+    StateLoop = loop;
+}
 
 void ClockInit() {
     size_t offset = 0;
@@ -85,9 +31,11 @@ void ClockInit() {
         InitTimePoint(schedule + offset, dayOfWeek, 23, 00);
         offset++;
     }
+}
+
+void ClockReload() {
     TimePoint now;
     GetTimePoint(&now);
-    lastMin = GetMin();
     for (indexSchedule = 0; indexSchedule < SCHEDULE_SIZE; indexSchedule++) {
         if (schedule[indexSchedule] > now) {
             break;
@@ -95,11 +43,43 @@ void ClockInit() {
     }
     indexSchedule %= SCHEDULE_SIZE;
     nextTimePoint = schedule[indexSchedule];
+    Buzzer();
 }
+
+typedef enum StateView {
+    viewTemp,
+    viewTime,
+    sleep,
+};
+
+void MenuClick() {
+    ChangState(HourEditReload, HourEditLoop);
+}
+
+void ClockShowTime(const unsigned char hour, const unsigned char min, const unsigned long startTime) {
+    static Timer timerPoint = CreateTimer(750);
+    static bool needShowPoint = false;
+    if (TimerTimeoutFix(&timerPoint, startTime)) {
+        needShowPoint = !needShowPoint;
+    }
+
+    ShowTime(hour, min);
+    needShowPoint ? PointOn() : PointOff();
+}
+
 
 void ClockLoop() {
     unsigned long startTime = millis();
 
+    static Button menuButton = CreateButton(Key::k3, MenuClick);
+    ButtonScan(&menuButton);
+
+    static Timer timerAutoLight = CreateTimer(5000);
+    if (TimerTimeoutFix(&timerAutoLight, startTime)) {
+        AutoLight();
+    }
+
+    static Timer timerCheckSchedule = CreateTimer(30);
     if (TimerTimeoutFix(&timerCheckSchedule, startTime)) {
         TimePoint now;
         GetTimePoint(&now);
@@ -110,54 +90,53 @@ void ClockLoop() {
             Buzzer();
         }
     }
-
-    if (TimerTimeoutFix(&timerPoint, startTime)) {
-        needShowPoint = !needShowPoint;
-    }
-    
+ 
+    static Timer timerUpdateTime = CreateTimer(900);
+    static unsigned char hour;
+    static unsigned char min;
+    static unsigned char sec;
     if (TimerTimeoutFix(&timerUpdateTime, startTime)) {
         GetTime(&hour, &min, &sec);
     }
 
-    if (TimerTimeoutFix(&timerAutoLight, startTime)) {
-        AutoLight();
-    }
-
+    static Timer timerCheckTemp = CreateTimer(10);
+    static int temp;
     if (TimerTimeoutFix(&timerCheckTemp, startTime)) {
         temp = GetTem();
-        if (temp < 15 || temp > 32) {
-            needShowTemp = true;
-        }
     }
 
-    ButtonScan(&menuButton);
-
-    if (needShowTemp || stateView == StateView::viewTemp) {
-        if (timerStateView <= startTime) {
-            switch (stateView) {
-                case StateView::viewTime:
-                    stateView = StateView::viewTemp;
-                    timerStateView = startTime + TIME_VIEW_TEMP;
-                    needShowPoint = false;
-                    PointOff();
-                    break;
-                case StateView::viewTemp:
-                default:
-                    stateView = StateView::viewTime;
-                    timerStateView = startTime + TIME_VIEW_TIME;
-                    break;
+    static StateView stateView = StateView::viewTime;
+    if (hour < 5) {
+        stateView = StateView::sleep;
+        Clear();
+        PointOff();
+    }
+    else if (temp <= 15 || temp >= 30) {
+        static unsigned long nextShowTime = 0;
+        if (nextShowTime < startTime) {
+            static bool isShowTemp = false;
+            isShowTemp = !isShowTemp;
+            if (isShowTemp) {
+                nextShowTime = startTime + TIME_VIEW_TIME;
+                stateView = StateView::viewTime;
+            }
+            else {
+                nextShowTime = startTime + TIME_VIEW_TEMP;
+                stateView = StateView::viewTemp;
+                PointOff();
             }
         }
     }
 
     switch (stateView) {
+        case StateView::viewTime:
+            ClockShowTime(hour, min, startTime);
+        break;
         case StateView::viewTemp:
             ShowTemperature(temp);
-            break;
-        case StateView::viewTime:
+        break;
+        case StateView::sleep:
         default:
-            ShowTime(hour, min);
-            needShowPoint ? PointOn() : PointOff();
             break;
     }
 

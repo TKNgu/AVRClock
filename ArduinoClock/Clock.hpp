@@ -2,16 +2,16 @@
 #define Clock_hpp
 
 extern void(*StateLoop)(void);
-
-void ChangState(void (*init)(void), void (*loop)(void));
+void ChangState(void (*reload)(void), void (*loop)(void));
 
 void ClockInit();
+void ClockReload();
 void ClockLoop();
 
-void HourEditInit();
+void HourEditReload();
 void HourEditLoop();
 
-void MinEditInit();
+void MinEditReload();
 void MinEditLoop();
 
 #endif

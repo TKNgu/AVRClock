@@ -76,6 +76,20 @@ void SetDateTime(const unsigned char hour, const unsigned char min, const unsign
     time.setTime(hour, min, sec, dayOfWeek, dayOfMonth, month, year);
 }
 
+void GetDayOfWeek(unsigned char *dayOfWeek) {
+    const char tmp;
+    time.getTime(&tmp, &tmp, &tmp, dayOfWeek, &tmp, &tmp, &tmp);
+}
+
+void SetDayOfWeek(const unsigned char dayOfWeek) {
+    unsigned char hour, min, sec;
+    unsigned char dayOfMonth, month, year;
+    unsigned char tmp;
+
+    time.getTime(&hour, &min, &sec, &tmp, &dayOfMonth, &month, &year);
+    time.setTime(hour, min, sec, dayOfWeek, dayOfMonth, month, year);
+}
+
 void Clear() {
     display.clear();
 }
@@ -126,6 +140,10 @@ void ShowMin(const unsigned char min) {
     display.display(1, min / 10);
     display.display(2, 0x7f);
     display.display(3, 0x7f);
+}
+
+void ShowNum(int num) {
+    display.num(num); 
 }
 
 bool ReadKey(const Key key) {
