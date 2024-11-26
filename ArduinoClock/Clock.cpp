@@ -127,6 +127,9 @@ void ClockLoop() {
             }
         }
     }
+    else {
+        stateView = StateView::viewTime;
+    }
 
     switch (stateView) {
         case StateView::viewTime:
