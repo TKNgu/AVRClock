@@ -9,7 +9,7 @@
 #include "Button.hpp"
 
 #define SLEEP_TIME 50
-#define SCHEDULE_SIZE 14
+#define SCHEDULE_SIZE 28
 #define TIME_VIEW_TEMP 2000
 #define TIME_VIEW_TIME 7000
 
@@ -27,6 +27,10 @@ void ClockInit() {
     size_t offset = 0;
     for (unsigned char dayOfWeek = 1; dayOfWeek <= 7; dayOfWeek++) {
         InitTimePoint(schedule + offset, dayOfWeek, 7, 30);
+        offset++;
+        InitTimePoint(schedule + offset, dayOfWeek, 8, 00);
+        offset++;
+        InitTimePoint(schedule + offset, dayOfWeek, 8, 10);
         offset++;
         InitTimePoint(schedule + offset, dayOfWeek, 23, 00);
         offset++;
