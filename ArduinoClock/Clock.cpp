@@ -1,151 +1,125 @@
 #include "Clock.hpp"
+#include <Arduino.h>
 
-#include <stdbool.h>
-
-#include "TimePoint.hpp"
-#include "Arduino.h"
-#include "Utils.hpp"
-#include "Timer.hpp"
 #include "Button.hpp"
+#include "StateManager.hpp"
+#include "TimePoint.hpp"
+#include "Timer.hpp"
+#include "Utils.hpp"
 
+#define HOURLY_CHIME_TASK 50000
+#define HOURLY_CHIME_SIZE 28
 #define SLEEP_TIME 50
-#define SCHEDULE_SIZE 28
-#define TIME_VIEW_TEMP 2000
-#define TIME_VIEW_TIME 7000
+#define CHECK_LIGHT_TASK 2000
+#define CHECK_TEMPERATURE_TASK 5000
+#define SHOW_TEMPERATURE_LONG 10000
+#define KEEP_TEMPERATURE_TIMEOUT 3000
+#define MIN_TEMPERATURE 15
+#define MAX_TEMPERATURE 29
+#define UPDATE_TIME_TASK 1000
+#define TIME_POIT_TASK 500
 
-static TimePoint schedule[SCHEDULE_SIZE];
-static size_t indexSchedule;
+static TimePoint hourlyChime[HOURLY_CHIME_SIZE];
+static unsigned char indexTimePoint;
 static TimePoint nextTimePoint;
+static unsigned char hour;
+static unsigned char minutes;
 
-void (*StateLoop)(void) = ClockLoop;
-void ChangState(void (*reload)(void), void (*loop)(void)) {
-    reload();
-    StateLoop = loop;
-}
-
-void ClockInit() {
-    size_t offset = 0;
+int InitClock() {
+    unsigned char offset = 0;
     for (unsigned char dayOfWeek = 1; dayOfWeek <= 7; dayOfWeek++) {
-        InitTimePoint(schedule + offset, dayOfWeek, 7, 30);
-        offset++;
-        InitTimePoint(schedule + offset, dayOfWeek, 8, 00);
-        offset++;
-        InitTimePoint(schedule + offset, dayOfWeek, 8, 10);
-        offset++;
-        InitTimePoint(schedule + offset, dayOfWeek, 23, 00);
-        offset++;
+        InitTimePoint(hourlyChime + offset++, dayOfWeek, 7, 00);
+        InitTimePoint(hourlyChime + offset++, dayOfWeek, 7, 30);
+        InitTimePoint(hourlyChime + offset++, dayOfWeek, 22, 00);
+        InitTimePoint(hourlyChime + offset++, dayOfWeek, 23, 30);
     }
+    return 0;
 }
 
 void ClockReload() {
-    TimePoint now;
-    GetTimePoint(&now);
-    for (indexSchedule = 0; indexSchedule < SCHEDULE_SIZE; indexSchedule++) {
-        if (schedule[indexSchedule] > now) {
+    GetClock(&hour, &minutes);
+
+    TimePoint timePoint;
+    GetTimePoint(&timePoint);
+    for (indexTimePoint = 0; indexTimePoint < HOURLY_CHIME_SIZE;
+         indexTimePoint++) {
+        if (hourlyChime[indexTimePoint] == timePoint) {
+            Buzzer();
+            indexTimePoint++;
+            break;
+        }
+        if (hourlyChime[indexTimePoint] > timePoint) {
             break;
         }
     }
-    indexSchedule %= SCHEDULE_SIZE;
-    nextTimePoint = schedule[indexSchedule];
-    Buzzer();
+    indexTimePoint %= HOURLY_CHIME_SIZE;
+    nextTimePoint = hourlyChime[indexTimePoint];
 }
 
-typedef enum StateView {
-    viewTemp,
-    viewTime,
-    sleep,
-};
+void ClockShow() {
+    static unsigned long now;
+    now = millis();
 
-void MenuClick() {
-    ChangState(HourEditReload, HourEditLoop);
-}
+    static struct Button buttonMenu =
+        CreateButton(Key::k3, StateManagerNextState);
+    ButtonScan(&buttonMenu);
 
-void ClockShowTime(const unsigned char hour, const unsigned char min, const unsigned long startTime) {
-    static Timer timerPoint = CreateTimer(750);
-    static bool needShowPoint = false;
-    if (TimerTimeoutFix(&timerPoint, startTime)) {
-        needShowPoint = !needShowPoint;
-    }
-
-    ShowTime(hour, min);
-    needShowPoint ? PointOn() : PointOff();
-}
-
-
-void ClockLoop() {
-    unsigned long startTime = millis();
-
-    static Button menuButton = CreateButton(Key::k3, MenuClick);
-    ButtonScan(&menuButton);
-
-    static Timer timerAutoLight = CreateTimer(5000);
-    if (TimerTimeoutFix(&timerAutoLight, startTime)) {
-        AutoLight();
-    }
-
-    static Timer timerCheckSchedule = CreateTimer(30);
-    if (TimerTimeoutFix(&timerCheckSchedule, startTime)) {
-        TimePoint now;
-        GetTimePoint(&now);
-        if (now == nextTimePoint) {
-            indexSchedule++;
-            indexSchedule %= SCHEDULE_SIZE;
-            nextTimePoint = schedule[indexSchedule];
+    static struct Timer timerHourlyChime = CreateTimer(HOURLY_CHIME_TASK);
+    if (TimerTimeoutFix(&timerHourlyChime, now)) {
+        static TimePoint timePoint;
+        GetTimePoint(&timePoint);
+        if (timePoint == nextTimePoint) {
+            indexTimePoint = (++indexTimePoint % HOURLY_CHIME_SIZE);
+            nextTimePoint = hourlyChime[indexTimePoint];
             Buzzer();
         }
     }
- 
-    static Timer timerUpdateTime = CreateTimer(900);
-    static unsigned char hour;
-    static unsigned char min;
-    static unsigned char sec;
-    if (TimerTimeoutFix(&timerUpdateTime, startTime)) {
-        GetTime(&hour, &min, &sec);
+
+    static struct Timer timerAutoLight = CreateTimer(CHECK_LIGHT_TASK);
+    if (TimerTimeoutFix(&timerAutoLight, now)) {
+        AutoLight();
     }
 
-    static Timer timerCheckTemp = CreateTimer(10);
-    static int temp;
-    if (TimerTimeoutFix(&timerCheckTemp, startTime)) {
-        temp = GetTem();
+    static unsigned long timeOutA = 0;
+    static unsigned long timeOutB = 0;
+    static bool showTemperature = true;
+    static int temperature = 0;
+    if (timeOutA < now) {
+        static struct Timer timerGetTemperature =
+            CreateTimer(CHECK_TEMPERATURE_TASK);
+        if (TimerTimeoutFix(&timerGetTemperature, now)) {
+            temperature = GetTemperature();
+            showTemperature = temperature <= MIN_TEMPERATURE ||
+                              temperature >= MAX_TEMPERATURE;
+        }
+        if (showTemperature) {
+            timeOutA = now + SHOW_TEMPERATURE_LONG;
+            timeOutB = now + KEEP_TEMPERATURE_TIMEOUT;
+        }
+    } else {
+        showTemperature = timeOutB >= now;
     }
 
-    static StateView stateView = StateView::viewTime;
-    if (hour < 5) {
-        stateView = StateView::sleep;
+    if (showTemperature) {
         Clear();
-        PointOff();
-    }
-    else if (temp <= 15 || temp >= 30) {
-        static unsigned long nextShowTime = 0;
-        if (nextShowTime < startTime) {
-            static bool isShowTemp = false;
-            isShowTemp = !isShowTemp;
-            if (isShowTemp) {
-                nextShowTime = startTime + TIME_VIEW_TIME;
-                stateView = StateView::viewTime;
-            }
-            else {
-                nextShowTime = startTime + TIME_VIEW_TEMP;
-                stateView = StateView::viewTemp;
-                PointOff();
-            }
+        ShowTemperature(temperature);
+    } else {
+        static struct Timer timerUpdateTime = CreateTimer(UPDATE_TIME_TASK);
+        if (TimerTimeoutFix(&timerUpdateTime, now)) {
+            GetClock(&hour, &minutes);
+        }
+        ShowTime(hour, minutes);
+
+        static struct Timer timerShowPoint = CreateTimer(TIME_POIT_TASK);
+        if (TimerTimeoutFix(&timerShowPoint, now)) {
+            static bool showTimePoint = false;
+            (showTimePoint = !showTimePoint) ? PointOn() : PointOff();
         }
     }
-    else {
-        stateView = StateView::viewTime;
-    }
 
-    switch (stateView) {
-        case StateView::viewTime:
-            ClockShowTime(hour, min, startTime);
-        break;
-        case StateView::viewTemp:
-            ShowTemperature(temp);
-        break;
-        case StateView::sleep:
-        default:
-            break;
+    static unsigned long end;
+    end = millis();
+    if (now + SLEEP_TIME > end) {
+        delay(SLEEP_TIME + now - end);
     }
-
-    delay(SLEEP_TIME - millis() + startTime);
 }

@@ -7,14 +7,14 @@
 #define LONG_PRESS 1000
 #define SHORT_PRESS 100
 
-typedef struct {
+struct Button {
     Key key;
     bool click;
     void (*shortFn)();
     void (*longFn)();
     unsigned long time;
     bool isLongPress;
-} Button;
+};
 
 Button CreateButton(const Key key, void (*shortFn)(void));
 Button CreateButtonLongPress(const Key key, void (*shortFn)(void), void (*longFn)(void));

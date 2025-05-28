@@ -3,12 +3,27 @@
 
 #include "TimePoint.hpp"
 
+void HardwareInit();
+
+// RTC
+void GetClock(unsigned char *hour, unsigned char *min);
+
+// Led
+void PointOn();
+void PointOff();
+
+void ShowTime(unsigned char hour, unsigned char min);
+
+// Key
 typedef enum {
     k1 = 9,
     k2 = 10,
     k3 = 11,
 } Key;
 
+bool ReadKey(const Key key);
+
+// Led
 typedef enum {
     led1 = 2,
     led2 = 3,
@@ -16,7 +31,19 @@ typedef enum {
     led4 = 5,
 } Led;
 
-void HardwareInit();
+void LedOn(const Led led);
+void LedOff(const Led led);
+void AutoLight();
+void ShowTemperature(int temperature);
+
+// Buzzer
+void Buzzer();
+
+// Sensor
+int GetLight();
+int GetTemperature();
+
+// Update version
 
 unsigned char GetDayOfWeek();
 unsigned char GetHour();
@@ -35,23 +62,12 @@ void SetDayOfWeek(const unsigned char dayOfWeek);
 
 void Clear();
 void SetLightLevel(unsigned char level);
-void ShowTime(unsigned char hour, unsigned char min);
-void PointOn();
-void PointOff();
-void ShowTemperature(int temperature);
 void ShowDayOfWeek(const unsigned char dayOfWeek);
 void ShowHour(const unsigned char hour);
 void ShowMin(const unsigned char min);
 void ShowNum(int num);
 
-bool ReadKey(const Key key);
-void LedOn(const Led led);
-void LedOff(const Led led);
-void Buzzer();
-
 int GetTem();
-int GetLight();
 
-void AutoLight();
 
 #endif

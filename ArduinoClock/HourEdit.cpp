@@ -1,28 +1,27 @@
-#include "Clock.hpp"
+#include "HourEdit.hpp"
+#include <Arduino.h>
 
-#include "Timer.hpp"
-#include "Arduino.h"
-#include "Utils.hpp"
 #include "Button.hpp"
+#include "StateManager.hpp"
+#include "Timer.hpp"
+#include "Utils.hpp"
 
-#define SLEEP_TIME 50
+#define SLEEP_TIME 10
+#define HOUR_BLINK 750
 #define CANCLE_TIME 5000
 
 static unsigned char hour;
-static unsigned char min;
-static bool view;
+static unsigned char minutes;
+static bool hourBlink = false;
 static unsigned long lastUpdate;
 
 void HourEditReload() {
     lastUpdate = millis();
-    unsigned char sec;
-    GetTime(&hour, &min, &sec);
-    Buzzer();
-}
+    GetClock(&hour, &minutes); }
 
 void UpHour() {
     lastUpdate = millis();
-    view = true;
+    hourBlink = false;
     hour++;
     if (hour >= 24) {
         hour -= 24;
@@ -32,7 +31,7 @@ void UpHour() {
 
 void UpHourLong() {
     lastUpdate = millis();
-    view = true;
+    hourBlink = false;
     hour += 5;
     if (hour >= 24) {
         hour -= 24;
@@ -41,11 +40,10 @@ void UpHourLong() {
 
 void DowHour() {
     lastUpdate = millis();
-    view = true;
+    hourBlink = false;
     if (hour == 0) {
         hour = 23;
-    }
-    else {
+    } else {
         hour--;
     }
     Buzzer();
@@ -53,33 +51,37 @@ void DowHour() {
 
 void DowHourLong() {
     lastUpdate = millis();
-    view = true;
+    hourBlink = false;
     if (hour < 5) {
         hour += 19;
-    }
-    else {
+    } else {
         hour -= 5;
     }
 }
 
-void SaveHour() {
+void Save() {
     unsigned char tmp;
-    GetTime(&tmp, &min, &tmp);
-    SetTime(hour, min);
-    ChangState(MinEditReload, MinEditLoop);
-    Buzzer();
+    GetTime(&tmp, &minutes, &tmp);
+    SetTime(hour, minutes);
+}
+
+void SaveHour() {
+    Save();
+    StateManagerNextState();
 }
 
 void SaveHourSkip() {
-    unsigned char tmp;
-    GetTime(&tmp, &min, &tmp);
-    SetTime(hour, min);
-    ChangState(ClockReload, ClockLoop);
-    Buzzer();
+    Save();
+    StateManagerStartState();
 }
 
-void HourEditLoop() {
-    unsigned long startTime = millis();
+void HourEditShow() {
+    static unsigned long now;
+    now = millis();
+
+    if (lastUpdate + CANCLE_TIME <= now) {
+        StateManagerStartState();
+    }
 
     static Button up = CreateButtonLongPress(Key::k2, UpHour, UpHourLong);
     ButtonScan(&up);
@@ -87,30 +89,22 @@ void HourEditLoop() {
     static Button down = CreateButtonLongPress(Key::k1, DowHour, DowHourLong);
     ButtonScan(&down);
 
-    static Button save = CreateButton(Key::k3, SaveHour);
+    static Button save = CreateButtonLongPress(Key::k3, SaveHour, SaveHourSkip);
     ButtonScan(&save);
 
-    static Timer timerView = CreateTimer(500);
-    if (TimerTimeoutFix(&timerView, startTime)) {
-        static bool viewHour = false;
-        viewHour = !viewHour;
-        if (view) {
-            view = false;
-            ShowTime(hour, min);
-        }
-        else if (viewHour) {
+    static Timer timerHourBlink = CreateTimer(HOUR_BLINK);
+    if (TimerTimeoutFix(&timerHourBlink, now)) {
+        if (hourBlink = !hourBlink) {
+            ShowTime(hour, minutes);
+        } else {
             Clear();
-            ShowTime(hour, min);
-        }
-        else {
-            Clear();
-            ShowMin(min);
+            ShowMin(minutes);
         }
     }
 
-    if (lastUpdate + CANCLE_TIME <= startTime) {
-        ChangState(ClockReload, ClockLoop);
+    static unsigned long end;
+    end = millis();
+    if (now + SLEEP_TIME > end) {
+        delay(SLEEP_TIME + now - end);
     }
-
-    delay(SLEEP_TIME - millis() + startTime);
 }
