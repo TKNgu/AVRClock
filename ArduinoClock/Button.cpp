@@ -1,6 +1,7 @@
 #include "Button.hpp"
+#include <Arduino.h>
+
 #include "Utils.hpp"
-#include "Arduino.h"
 
 Button CreateButton(const Key key, void (*shortFn)(void)) {
     return Button {
@@ -25,12 +26,7 @@ Button CreateButtonLongPress(const Key key, void (*shortFn)(void), void (*longFn
 }
 
 void ButtonInit(Button *button, Key key, void (*shortFn)(void), void (*longFn)(void)) {
-    button->key = key;
-    button->click = false;
-    button->shortFn = shortFn;
-    button->longFn = longFn;
-    button->time = 0;
-    button->isLongPress = false;
+    *button = CreateButtonLongPress(key, shortFn, longFn);
 }
 
 void ButtonScan(Button *button) {

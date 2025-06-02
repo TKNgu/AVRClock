@@ -16,9 +16,9 @@ void ShowTime(unsigned char hour, unsigned char min);
 
 // Key
 typedef enum {
-    k1 = 9,
-    k2 = 10,
-    k3 = 11,
+    KeyDown = 9,
+    KeyUp = 10,
+    KeyMenu = 11,
 } Key;
 
 bool ReadKey(const Key key);
@@ -33,11 +33,14 @@ typedef enum {
 
 void LedOn(const Led led);
 void LedOff(const Led led);
+void LedBlink(const Led led);
+float GetLigh();
 void AutoLight();
 void ShowTemperature(int temperature);
 
 // Buzzer
 void Buzzer();
+void BuzzerSilen();
 
 // Sensor
 int GetLight();

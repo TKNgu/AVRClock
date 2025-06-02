@@ -6,10 +6,14 @@ struct State {
     void (*Loop)(void);
 };
 
-int InitStateManager(unsigned char size);
+int StateManagerInit(unsigned char size);
 int StateManagerSetState(unsigned char index, struct State state);
+void StateManagerSetSleepState(struct State state);
+
 void StateManagerNextState();
 void StateManagerStartState();
+void StateManagerSleepState();
+
 void StateManagerLoop();
 
 #endif

@@ -1,7 +1,9 @@
 #ifndef Clock_hpp
 #define Clock_hpp
 
-int InitClock();
+extern void (*GetTimeCallback)(unsigned char hour, unsigned char minutes);
+
+int ClockInit();
 void ClockReload();
 void ClockShow();
 

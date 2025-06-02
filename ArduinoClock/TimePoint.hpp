@@ -3,7 +3,7 @@
 
 typedef unsigned int TimePoint;
 
-void InitTimePoint(TimePoint *timePoint,
+void TimePointInit(TimePoint *timePoint,
     const unsigned char dayOfWeek,
     const unsigned char hour,
     const unsigned char minutes);

@@ -2,6 +2,5 @@
 #define HourEdit_hpp
 
 void HourEditReload();
-void HourEditShow();
 
 #endif

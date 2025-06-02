@@ -1,6 +1,9 @@
 #include "Utils.hpp"
 
-#include "Arduino.h"
+#include <Arduino.h>
+#include <EEPROM.h>
+
+#include "KamaFilter.h"
 #include "TTSDisplay.h"
 #include "TTSTemp.h"
 #include "TTSTime.h"
@@ -11,16 +14,33 @@
 static TTSDisplay display;
 static TTSTime time;
 static TTSTemp temp;
+static KamaFilter temperatureFilter;
 
-static int maxLevel = 0x00;
-static int minLevel = 0xff;
+static float maxLevel = 0x00;
+static float minLevel = 0xff;
 static int rangeLevel = 0xffff;
 static unsigned char lightLevel = 0x00;
+static KamaFilter lightFilter;
+
+void ReadLighLevel() {
+    float tmpMin;
+    EEPROM.get(0, tmpMin);
+    if (tmpMin <= minLevel) {
+        minLevel = tmpMin;
+    }
+    float tmpMax;
+    EEPROM.get(4, tmpMax);
+    if (tmpMax >= maxLevel) {
+        maxLevel = tmpMax;
+    }
+}
 
 void HardwareInit() {
-    pinMode(Key::k1, INPUT_PULLUP);
-    pinMode(Key::k2, INPUT_PULLUP);
-    pinMode(Key::k3, INPUT_PULLUP);
+    ReadLighLevel();
+
+    pinMode(Key::KeyDown, INPUT_PULLUP);
+    pinMode(Key::KeyUp, INPUT_PULLUP);
+    pinMode(Key::KeyMenu, INPUT_PULLUP);
 
     pinMode(Led::led1, OUTPUT);
     pinMode(Led::led2, OUTPUT);
@@ -28,6 +48,9 @@ void HardwareInit() {
     pinMode(Led::led4, OUTPUT);
 
     pinMode(BUZZER_DEVICE, OUTPUT);
+
+    lightFilter.begin(analogRead(LIGHT));
+    temperatureFilter.begin(temp.get());
 
     display.clear();
 }
@@ -59,7 +82,7 @@ TimePoint GetTimePoint(TimePoint* now) {
     static unsigned char dayOfWeek;
     static unsigned char tmp;
     time.getTime(&hour, &min, &tmp, &dayOfWeek, &tmp, &tmp, &tmp);
-    InitTimePoint(now, dayOfWeek, hour, min);
+    TimePointInit(now, dayOfWeek, hour, min);
 }
 
 void GetTime(unsigned char* hour, unsigned char* min, unsigned char* sec) {
@@ -147,20 +170,34 @@ void LedOn(const Led led) { digitalWrite(led, HIGH); }
 
 void LedOff(const Led led) { digitalWrite(led, LOW); }
 
+void LedBlink(const Led led) {
+    static bool isBlink = true;
+    (isBlink = !isBlink) ? LedOn(led) : LedOff(led);
+}
+
 void Buzzer() { tone(BUZZER_DEVICE, 2400, 60); }
+void BuzzerSilen() { noTone(BUZZER_DEVICE); }
 
-int GetTemperature() { return temp.get(); }
+int GetTemperature() {
+    temperatureFilter.update(temp.get());
+    return temperatureFilter.getValue();
+}
 
-int GetLight() { return analogRead(LIGHT); }
+int GetLight() {
+    lightFilter.update(analogRead(LIGHT));
+    return lightFilter.getValue();
+}
 
 void AutoLight() {
     static int light;
     light = GetLight();
     if (light < minLevel) {
         minLevel = light;
+        EEPROM.put(0, minLevel);
     }
     if (light > maxLevel) {
         maxLevel = light;
+        EEPROM.put(4, maxLevel);
     }
     static unsigned char tmp;
     tmp = (unsigned char)((light - minLevel) * 7.0f / (maxLevel - minLevel));

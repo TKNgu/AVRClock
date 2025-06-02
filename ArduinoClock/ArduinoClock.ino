@@ -1,32 +1,39 @@
 #include <Arduino.h>
 
-#include "StateManager.hpp"
 #include "Utils.hpp"
+#include "StateManager.hpp"
 #include "Clock.hpp"
+#include "ClockEdit.hpp"
 #include "HourEdit.hpp"
-#include "Button.hpp"
 #include "MinutesEdit.hpp"
+#include "SleepState.hpp"
+#include "Timer.hpp"
+#include "LowPower.h"
+#include "Button.hpp"
 
 void setup() {
     HardwareInit();
-    InitClock();
-    InitStateManager(3);
+    StateManagerInit(3);
     StateManagerSetState(0, (struct State) {
         .Reload = ClockReload,
         .Loop = ClockShow,
     });
     StateManagerSetState(1, (struct State) {
         .Reload = HourEditReload,
-        .Loop = HourEditShow,
+        .Loop = ClockEditLoop,
     });
     StateManagerSetState(2, (struct State) {
         .Reload = MinutesEditReload,
-        .Loop = MinutesEditLoop,
+        .Loop = ClockEditLoop,
     });
+    StateManagerSetSleepState((struct State) {
+        .Reload = SleepStateReload,
+        .Loop = SleepStateLoop,
+    });
+    ClockInit();
+    GetTimeCallback = SleepStateCheck;
     StateManagerStartState();
-    Buzzer();
 }
-
 
 void loop() {
     StateManagerLoop();

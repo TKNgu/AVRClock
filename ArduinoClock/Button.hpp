@@ -2,7 +2,6 @@
 #define Button_hpp
 
 #include "Utils.hpp"
-#include "Timer.hpp"
 
 #define LONG_PRESS 1000
 #define SHORT_PRESS 100
