@@ -179,11 +179,13 @@ void Buzzer() { tone(BUZZER_DEVICE, 2400, 60); }
 void BuzzerSilen() { noTone(BUZZER_DEVICE); }
 
 int GetTemperature() {
-    temperatureFilter.update(temp.get());
-    return temperatureFilter.getValue();
+    return 27;
+    // temperatureFilter.update(temp.get());
+    // return temperatureFilter.getValue();
 }
 
 int GetLight() {
+    // return 10;
     lightFilter.update(analogRead(LIGHT));
     return lightFilter.getValue();
 }

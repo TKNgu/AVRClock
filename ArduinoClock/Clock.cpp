@@ -2,7 +2,6 @@
 #include <Arduino.h>
 
 #include "Button.hpp"
-#include "KamaFilter.h"
 #include "LowPower.h"
 #include "StateManager.hpp"
 #include "TimePoint.hpp"
@@ -28,7 +27,7 @@ static unsigned char indexTimePoint;
 static TimePoint nextTimePoint;
 static unsigned char hour;
 static unsigned char minutes;
-static bool showTemperature = true;
+static bool showTemperature = false;
 static bool isEnableLightWarning = true;
 
 static void (*GetTimeCallback)(unsigned char hour,

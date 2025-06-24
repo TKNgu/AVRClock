@@ -25,6 +25,8 @@ void SleepStateCheck(unsigned char hour, unsigned char minutes) {
     LedBlink(led3);
     Buzzer();
     if (GetLight() < LIGHT_LEVEL_SLEEP) {
+        LowPower.idle(SLEEP_2S, ADC_ON, TIMER2_ON, TIMER1_OFF, TIMER0_ON,
+                      SPI_OFF, USART0_OFF, TWI_OFF);
         StateManagerSleepState();
     }
 }
