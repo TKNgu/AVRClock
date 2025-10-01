@@ -84,13 +84,16 @@ void ClockShow() {
     ButtonScan(&down);
 
     static struct Timer timerHourlyChime = CreateTimer(HOURLY_CHIME_TASK);
+    static bool nexBuzzer = false;
+    static char minutesBuzzer = 0;
     if (TimerTimeoutFix(&timerHourlyChime, now)) {
         static TimePoint timePoint;
         GetTimePoint(&timePoint);
-        if (timePoint == nextTimePoint) {
+        if ((timePoint + 1) == nextTimePoint) {
             indexTimePoint = (++indexTimePoint % HOURLY_CHIME_SIZE);
             nextTimePoint = hourlyChime[indexTimePoint];
-            Buzzer();
+            nexBuzzer = true;
+            minutesBuzzer = (GetMin() + 1) % 60;
         }
     }
 
@@ -137,6 +140,10 @@ void ClockShow() {
         if (TimerTimeoutFix(&timerUpdateTime, now)) {
             GetClock(&hour, &minutes);
             GetTimeCallback ? GetTimeCallback(hour, minutes) : (void)0;
+            if (nexBuzzer && minutesBuzzer == minutes) {
+                nexBuzzer = false;
+                Buzzer();
+            }
         }
     }
 

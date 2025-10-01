@@ -3,6 +3,11 @@
 BOAD=arduino:avr:uno
 PROJECT=ArduinoClock
 
+if [ "$1" == "chmod" ]
+then
+    sudo chmod 0666 /dev/ttyACM0
+fi
+
 if [ "$1" == "clean" ] || [ "$1" == "c" ]
 then
   arduino-cli compile -b $BOAD $PROJECT --clean
