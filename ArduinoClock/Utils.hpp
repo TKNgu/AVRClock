@@ -6,7 +6,7 @@
 void HardwareInit();
 
 // RTC
-void GetClock(unsigned char *hour, unsigned char *min);
+void GetClock(unsigned char* hour, unsigned char* min);
 
 // Led
 void PointOn();
@@ -47,20 +47,20 @@ int GetLight();
 int GetTemperature();
 
 // Update version
-
 unsigned char GetDayOfWeek();
 unsigned char GetHour();
 unsigned char GetMin();
-TimePoint GetTimePoint(TimePoint *now);
-void GetTime(unsigned char *hour, unsigned char *min, unsigned char *sec);
+TimePoint GetTimePoint(TimePoint* now);
+void GetTime(unsigned char* hour, unsigned char* min, unsigned char* sec);
 void SetTime(const unsigned char hour, const unsigned char min);
-void GetDateTime(unsigned char *hour, unsigned char *min, unsigned char *sec,
-    unsigned char *dayOfWeek,
-    unsigned char *dayOfMonth, unsigned char *month, unsigned char *year);
-void SetDateTime(const unsigned char hour, const unsigned char min, const unsigned char sec,
-    const unsigned char dayOfWeek,
-    const unsigned char dayOfMonth, const unsigned char month, const unsigned char year);
-void GetDayOfWeek(unsigned char *dayOfWeek);
+void GetDateTime(unsigned char* hour, unsigned char* min, unsigned char* sec,
+                 unsigned char* dayOfWeek, unsigned char* dayOfMonth,
+                 unsigned char* month, unsigned char* year);
+void SetDateTime(const unsigned char hour, const unsigned char min,
+                 const unsigned char sec, const unsigned char dayOfWeek,
+                 const unsigned char dayOfMonth, const unsigned char month,
+                 const unsigned char year);
+void GetDayOfWeek(unsigned char* dayOfWeek);
 void SetDayOfWeek(const unsigned char dayOfWeek);
 
 void Clear();
@@ -71,6 +71,5 @@ void ShowMin(const unsigned char min);
 void ShowNum(int num);
 
 int GetTem();
-
 
 #endif

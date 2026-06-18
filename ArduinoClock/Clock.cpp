@@ -106,44 +106,20 @@ void ClockShow() {
         AutoLight();
     }
 
-    static unsigned long timeOutA = 0;
-    static unsigned long timeOutB = 0;
-    static int temperature = 0;
-    if (timeOutA < now) {
-        static struct Timer timerGetTemperature =
-            CreateTimer(CHECK_TEMPERATURE_TASK);
-        if (TimerTimeoutFix(&timerGetTemperature, now)) {
-            temperature = GetTemperature();
-            showTemperature = temperature <= MIN_TEMPERATURE ||
-                              temperature >= MAX_TEMPERATURE;
-        }
-        if (showTemperature) {
-            timeOutA = now + SHOW_TEMPERATURE_LONG;
-            timeOutB = now + KEEP_TEMPERATURE_TIMEOUT;
-        }
-    } else {
-        showTemperature = timeOutB >= now;
+    ShowTime(hour, minutes);
+    static struct Timer timerShowPoint = CreateTimer(TIME_POIT_TASK);
+    if (TimerTimeoutFix(&timerShowPoint, now)) {
+        static bool showTimePoint = false;
+        (showTimePoint = !showTimePoint) ? PointOn() : PointOff();
     }
 
-    if (showTemperature) {
-        Clear();
-        ShowTemperature(temperature);
-    } else {
-        ShowTime(hour, minutes);
-        static struct Timer timerShowPoint = CreateTimer(TIME_POIT_TASK);
-        if (TimerTimeoutFix(&timerShowPoint, now)) {
-            static bool showTimePoint = false;
-            (showTimePoint = !showTimePoint) ? PointOn() : PointOff();
-        }
-
-        static struct Timer timerUpdateTime = CreateTimer(UPDATE_TIME_TASK);
-        if (TimerTimeoutFix(&timerUpdateTime, now)) {
-            GetClock(&hour, &minutes);
-            GetTimeCallback ? GetTimeCallback(hour, minutes) : (void)0;
-            if (nexBuzzer && minutesBuzzer == minutes) {
-                nexBuzzer = false;
-                Buzzer();
-            }
+    static struct Timer timerUpdateTime = CreateTimer(UPDATE_TIME_TASK);
+    if (TimerTimeoutFix(&timerUpdateTime, now)) {
+        GetClock(&hour, &minutes);
+        GetTimeCallback ? GetTimeCallback(hour, minutes) : (void)0;
+        if (nexBuzzer && minutesBuzzer == minutes) {
+            nexBuzzer = false;
+            Buzzer();
         }
     }
 
