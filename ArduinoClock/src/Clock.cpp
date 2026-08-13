@@ -1,12 +1,13 @@
 #include "Clock.hpp"
+
 #include <Arduino.h>
 
 #include "Button.hpp"
-#include "LowPower.h"
 #include "StateManager.hpp"
-#include "TimePoint.hpp"
-#include "Timer.hpp"
-#include "Utils.hpp"
+#include "utils/LowPower.h"
+#include "utils/TimePoint.hpp"
+#include "utils/Timer.hpp"
+#include "utils/Utils.hpp"
 
 #define HOURLY_CHIME_TASK 50000
 #define HOURLY_CHIME_SIZE 28
@@ -36,10 +37,10 @@ static void (*GetTimeCallback)(unsigned char hour,
 int ClockInit() {
     unsigned char offset = 0;
     for (unsigned char dayOfWeek = 1; dayOfWeek <= 7; dayOfWeek++) {
-        TimePointInit(hourlyChime + offset++, dayOfWeek, 7, 00);
-        TimePointInit(hourlyChime + offset++, dayOfWeek, 7, 30);
-        TimePointInit(hourlyChime + offset++, dayOfWeek, 22, 00);
-        TimePointInit(hourlyChime + offset++, dayOfWeek, 23, 30);
+        // TimePointInit(hourlyChime + offset++, dayOfWeek, 7, 00);
+        // TimePointInit(hourlyChime + offset++, dayOfWeek, 7, 30);
+        // TimePointInit(hourlyChime + offset++, dayOfWeek, 22, 00);
+        // TimePointInit(hourlyChime + offset++, dayOfWeek, 23, 30);
     }
     return 0;
 }
@@ -83,19 +84,19 @@ void ClockShow() {
     static Button down = CreateButton(Key::KeyDown, StopLightLevelWarning);
     ButtonScan(&down);
 
-    static struct Timer timerHourlyChime = CreateTimer(HOURLY_CHIME_TASK);
+    // static struct Timer timerHourlyChime = CreateTimer(HOURLY_CHIME_TASK);
     static bool nexBuzzer = false;
     static char minutesBuzzer = 0;
-    if (TimerTimeoutFix(&timerHourlyChime, now)) {
-        static TimePoint timePoint;
-        GetTimePoint(&timePoint);
-        if ((timePoint + 1) == nextTimePoint) {
-            indexTimePoint = (++indexTimePoint % HOURLY_CHIME_SIZE);
-            nextTimePoint = hourlyChime[indexTimePoint];
-            nexBuzzer = true;
-            minutesBuzzer = (GetMin() + 1) % 60;
-        }
-    }
+    // if (TimerTimeoutFix(&timerHourlyChime, now)) {
+    //     static TimePoint timePoint;
+    //     GetTimePoint(&timePoint);
+    //     if ((timePoint + 1) == nextTimePoint) {
+    //         indexTimePoint = (++indexTimePoint % HOURLY_CHIME_SIZE);
+    //         nextTimePoint = hourlyChime[indexTimePoint];
+    //         nexBuzzer = true;
+    //         minutesBuzzer = (GetMin() + 1) % 60;
+    //     }
+    // }
 
     static struct Timer timerAutoLight = CreateTimer(CHECK_LIGHT_TASK);
     if (TimerTimeoutFix(&timerAutoLight, now)) {
@@ -106,23 +107,23 @@ void ClockShow() {
         AutoLight();
     }
 
-    ShowTime(hour, minutes);
-    static struct Timer timerShowPoint = CreateTimer(TIME_POIT_TASK);
-    if (TimerTimeoutFix(&timerShowPoint, now)) {
-        static bool showTimePoint = false;
-        (showTimePoint = !showTimePoint) ? PointOn() : PointOff();
-    }
+    // ShowTime(hour, minutes);
+    // static struct Timer timerShowPoint = CreateTimer(TIME_POIT_TASK);
+    // if (TimerTimeoutFix(&timerShowPoint, now)) {
+    //     static bool showTimePoint = false;
+    //     (showTimePoint = !showTimePoint) ? PointOn() : PointOff();
+    // }
 
-    static struct Timer timerUpdateTime = CreateTimer(UPDATE_TIME_TASK);
-    if (TimerTimeoutFix(&timerUpdateTime, now)) {
-        GetClock(&hour, &minutes);
-        GetTimeCallback ? GetTimeCallback(hour, minutes) : (void)0;
-        if (nexBuzzer && minutesBuzzer == minutes) {
-            nexBuzzer = false;
-            Buzzer();
-        }
-    }
+    // static struct Timer timerUpdateTime = CreateTimer(UPDATE_TIME_TASK);
+    // if (TimerTimeoutFix(&timerUpdateTime, now)) {
+    //     GetClock(&hour, &minutes);
+    //     GetTimeCallback ? GetTimeCallback(hour, minutes) : (void)0;
+    //     if (nexBuzzer && minutesBuzzer == minutes) {
+    //         nexBuzzer = false;
+    //         Buzzer();
+    //     }
+    // }
 
-    LowPower.idle(SLEEP_500MS, ADC_ON, TIMER2_ON, TIMER1_OFF, TIMER0_ON,
-                  SPI_OFF, USART0_OFF, TWI_OFF);
+    // LowPower.idle(SLEEP_500MS, ADC_ON, TIMER2_ON, TIMER1_OFF, TIMER0_ON,
+    //               SPI_OFF, USART0_OFF, TWI_OFF);
 }

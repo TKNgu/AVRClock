@@ -2,7 +2,7 @@
 #include <Arduino.h>
 
 #include "ClockEdit.hpp"
-#include "Utils.hpp"
+#include "utils/Utils.hpp"
 
 void UpHour(unsigned char value) {
     hour += value;

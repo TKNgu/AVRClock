@@ -2,7 +2,7 @@
 #include <Arduino.h>
 
 #include "ClockEdit.hpp"
-#include "Utils.hpp"
+#include "utils/Utils.hpp"
 
 void UpMinutes(unsigned char value) {
     minutes += value;

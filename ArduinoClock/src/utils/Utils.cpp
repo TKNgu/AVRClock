@@ -76,13 +76,13 @@ unsigned char GetHour() { return time.getHour(); }
 
 unsigned char GetMin() { return time.getMin(); }
 
-TimePoint GetTimePoint(TimePoint* now) {
-    static unsigned char hour;
-    static unsigned char min;
-    static unsigned char dayOfWeek;
-    static unsigned char tmp;
+TimePoint GetTimePoint() {
+    unsigned char hour;
+    unsigned char min;
+    unsigned char dayOfWeek;
+    unsigned char tmp;
     time.getTime(&hour, &min, &tmp, &dayOfWeek, &tmp, &tmp, &tmp);
-    TimePointInit(now, dayOfWeek, hour, min);
+    return TimePointInit(dayOfWeek, hour, min);
 }
 
 void GetTime(unsigned char* hour, unsigned char* min, unsigned char* sec) {

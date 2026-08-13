@@ -2,10 +2,10 @@
 #include <Arduino.h>
 
 #include "Button.hpp"
-#include "LowPower.h"
 #include "StateManager.hpp"
-#include "Timer.hpp"
-#include "Utils.hpp"
+#include "utils/LowPower.h"
+#include "utils/Timer.hpp"
+#include "utils/Utils.hpp"
 
 #define CANCLE_TIME 5000
 

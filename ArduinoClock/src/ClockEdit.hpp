@@ -4,9 +4,9 @@
 extern unsigned char hour;
 extern unsigned char minutes;
 
-extern void(*UpCallback)(unsigned char value);
-extern void(*DownCallback)(unsigned char value);
-extern void(*BlinkCallback)();
+extern void (*UpCallback)(unsigned char value);
+extern void (*DownCallback)(unsigned char value);
+extern void (*BlinkCallback)();
 
 void ClockEditReload();
 void ClockEditLoop();

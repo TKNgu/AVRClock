@@ -1,8 +1,8 @@
 #include "StateManager.hpp"
-#include <Arduino.h>
-#include <stdlib.h>
 
-#include "Utils.hpp"
+#include <Arduino.h>
+
+#include "utils/Utils.hpp"
 
 #define DELAY_TIME_SLEEP 5000
 

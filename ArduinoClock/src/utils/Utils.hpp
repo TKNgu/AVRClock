@@ -50,7 +50,8 @@ int GetTemperature();
 unsigned char GetDayOfWeek();
 unsigned char GetHour();
 unsigned char GetMin();
-TimePoint GetTimePoint(TimePoint* now);
+void GetTimePoint(TimePoint* now);
+TimePoint GetTimePoint();
 void GetTime(unsigned char* hour, unsigned char* min, unsigned char* sec);
 void SetTime(const unsigned char hour, const unsigned char min);
 void GetDateTime(unsigned char* hour, unsigned char* min, unsigned char* sec,
