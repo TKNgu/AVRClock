@@ -1,6 +1,5 @@
 #include "ArduinoClock.hpp"
 
-#include "Clock.hpp"
 #include "ClockEdit.hpp"
 #include "HourEdit.hpp"
 #include "MinutesEdit.hpp"
@@ -13,10 +12,6 @@ ArduinoClock::ArduinoClock() {}
 void ArduinoClock::setup() {
     HardwareInit();
     StateManagerInit(3);
-    StateManagerSetState(0, (struct State){
-                                .Reload = ClockReload,
-                                .Loop = ClockShow,
-                            });
     StateManagerSetState(1, (struct State){
                                 .Reload = HourEditReload,
                                 .Loop = ClockEditLoop,
@@ -29,8 +24,6 @@ void ArduinoClock::setup() {
         .Reload = SleepStateReload,
         .Loop = SleepStateLoop,
     });
-    ClockInit();
-    GetTimeCallback = SleepStateCheck;
     StateManagerStartState();
 }
 

@@ -2,11 +2,12 @@
 
 #include <Arduino.h>
 
-#include "utils/LowPower.h"
-#include "utils/Utils.hpp"
+#include "../utils/LowPower.h"
+#include "../utils/Utils.hpp"
 
 ClockState::ClockState(StateManager2* manager)
-    : State2(manager), clockEngine(), clockPoint(), clockChime() {}
+    : State2(manager), clockEngine(), clockPoint(), clockChime(), clockLight() {
+}
 
 void ClockState::reload() {
     clockEngine.reload();
@@ -24,6 +25,8 @@ void ClockState::loop() {
     if (clockEngine.isUpdateMinute) {
         clockChime.check();
     }
+
+    clockLight.check(now);
 
     LowPower.idle(SLEEP_500MS, ADC_ON, TIMER2_ON, TIMER1_OFF, TIMER0_ON,
                   SPI_OFF, USART0_OFF, TWI_OFF);
