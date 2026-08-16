@@ -36,11 +36,10 @@ void ClockChime::reload() {
     minutesCount = nextTimePoint - timePoint;
 }
 
-void ClockChime::check() {
+bool ClockChime::check() {
     if (minutesCount-- > 1) {
-        return;
+        return false;
     }
-    Buzzer();
 
     TimePoint timePoint = timePoints[indexTimePoint];
     indexTimePoint++;
@@ -49,4 +48,5 @@ void ClockChime::check() {
     }
     TimePoint nextTimePoint = timePoints[indexTimePoint];
     minutesCount = nextTimePoint - timePoint;
+    return true;
 }

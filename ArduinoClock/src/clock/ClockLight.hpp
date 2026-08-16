@@ -1,7 +1,7 @@
 #ifndef CLOCKLIGHT_HPP
 #define CLOCKLIGHT_HPP
 
-#include "../utils/Timer.hpp"
+#include "../timer/Timer.hpp"
 
 #define CHECK_LIGHT_TASK 2000
 #define SIZE_ITEM 7
