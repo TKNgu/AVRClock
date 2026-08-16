@@ -33,7 +33,10 @@ void ClockView::loop(unsigned long now) {
     }
 
     ShowTime(timeManager_.hour, timeManager_.minutes);
-    blinkTimer_.blink(now) ? PointOn() : PointOff();
+    blinkTimer_.blink(now);
+    if (blinkTimer_.isChanged) {
+        blinkTimer_.isBlink ? PointOn() : PointOff();
+    }
     
-    powerManager.sleep(SleepMode::Deep, SLEEP_250MS);
+    powerManager.sleep(SleepMode::Idle, SLEEP_250MS);
 }

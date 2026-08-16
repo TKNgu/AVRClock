@@ -30,6 +30,7 @@ struct TimeManager {
 class TimeManagerAdvance : public TimeManager {
   public:
     bool needSleep();
+    bool isNearWakeUp(unsigned int minutesBefore);
     void waitSleep(unsigned long duration);
 };
 

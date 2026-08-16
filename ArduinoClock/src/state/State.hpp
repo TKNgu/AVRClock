@@ -6,6 +6,7 @@
 #include "../button/Button.hpp"
 #include "../clock/TimeManager.hpp"
 #include "../timer/BlinkTimer.hpp"
+#include "../utils/PowerManager.hpp"
 
 class StateManager;
 
@@ -35,7 +36,7 @@ class ClockState : public State {
     bool canDeepSleep(unsigned long now) {
         return (now - deepSleepDelayStart_) > 4000;
     }
-    void resetDeepSleepDelay() { deepSleepDelayStart_ = millis(); }
+    void resetDeepSleepDelay() { deepSleepDelayStart_ = powerManager.getMillis(); }
 };
 
 #endif // STATE2_HPP

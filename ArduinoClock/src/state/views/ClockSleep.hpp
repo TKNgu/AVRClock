@@ -11,6 +11,7 @@ class ClockSleep : public ClockState {
   private:
     Timer sleepTimer_ = CreateTimer(1000);
     bool isNeedClear_ = true;
+    bool isNearWakeUpSynced_ = false;
 };
 
 #endif // CLOCKSLEEP_HPP

@@ -14,9 +14,15 @@ void ClockSleep::reload() {
     LedOff(led4);
     ResetTimer(&sleepTimer_);
     isNeedClear_ = true;
+    isNearWakeUpSynced_ = false;
 }
 
 void ClockSleep::loop(unsigned long now) {
+    if (!timeManager_.needSleep()) {
+        manager_->switchToDefaultState();
+        return;
+    }
+
     if (buttonMenu_.scan(now) == Button::LongPress) {
         timeManager_.waitSleep(180000);
         manager_->switchToDefaultState();
@@ -29,7 +35,17 @@ void ClockSleep::loop(unsigned long now) {
             Clear();
             PointOff();
         }
-        powerManager.sleep(SleepMode::Deep, SLEEP_1S);
+
+        if (timeManager_.isNearWakeUp(10)) {
+            if (!isNearWakeUpSynced_) {
+                timeManager_.reload();
+                isNearWakeUpSynced_ = true;
+            }
+            powerManager.sleep(SleepMode::Idle, SLEEP_1S);
+        } else {
+            isNearWakeUpSynced_ = false;
+            powerManager.sleep(SleepMode::Deep, SLEEP_1S);
+        }
     } else {
         if (TimerTimeoutFix(&sleepTimer_, now)) {
             powerManager.buzzer();

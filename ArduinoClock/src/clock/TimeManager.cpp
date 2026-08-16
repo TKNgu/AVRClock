@@ -3,6 +3,7 @@
 #include <Arduino.h>
 
 #include "../utils/Utils.hpp"
+#include "../utils/PowerManager.hpp"
 
 #define UPDATE_TIME_TASK 3600000
 
@@ -10,7 +11,7 @@ TimeManager::TimeManager() : syncTimer(CreateTimer(UPDATE_TIME_TASK)) {}
 
 void TimeManager::reload() {
     GetTime(&hour, &minutes, &seconds);
-    timeOffset = millis() - (unsigned long)seconds * 1000;
+    timeOffset = powerManager.getMillis() - (unsigned long)seconds * 1000;
 }
 
 void TimeManager::setTime() { SetTime(hour, minutes); }
@@ -80,6 +81,18 @@ bool TimeManagerAdvance::needSleep() {
         return tmp >= SLEEP_TIME || tmp < WAKE_TIME;
     }
     return false;
+}
+
+bool TimeManagerAdvance::isNearWakeUp(unsigned int minutesBefore) {
+    const unsigned int WAKE_TIME = WAKE_HOUR * 60 + WAKE_MINUTE;
+    unsigned int tmp = hour * 60 + minutes;
+    
+    int diff = WAKE_TIME - tmp;
+    if (diff < 0) {
+        diff += 24 * 60;
+    }
+    
+    return diff > 0 && diff <= (int)minutesBefore;
 }
 
 void TimeManagerAdvance::waitSleep(unsigned long duration) {

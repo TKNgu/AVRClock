@@ -1,8 +1,8 @@
 #ifndef CLOCKEDIT2_HPP
 #define CLOCKEDIT2_HPP
 
-#include "../State.hpp"
 #include "../../button/Button.hpp"
+#include "../State.hpp"
 
 class ClockEdit : public ClockState {
   public:
@@ -20,6 +20,8 @@ class ClockEdit : public ClockState {
     inline static Timer longPressTimer_ = Timer(CreateTimer(500));
     inline static Button buttonUp_ = Button(Key::KeyUp);
     inline static Button buttonDown_ = Button(Key::KeyDown);
+
+    bool isValueChanged_ = true;
 };
 
 #endif // CLOCKEDIT2_HPP

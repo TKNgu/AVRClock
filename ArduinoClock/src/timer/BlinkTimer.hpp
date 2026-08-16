@@ -6,6 +6,7 @@
 struct BlinkTimer {
     Timer timer;
     bool isBlink = false;
+    bool isChanged = true;
 
     BlinkTimer(unsigned long);
     void reset(unsigned long);

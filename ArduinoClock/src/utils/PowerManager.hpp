@@ -19,8 +19,11 @@ public:
 
     void blockDeepSleep(unsigned long durationMs = 2000);
 
+    unsigned long getMillis();
+
 private:
     unsigned long blockDeepSleepUntil_ = 0;
+    unsigned long sleepCompensation_ = 0;
     unsigned long getPeriodMs(period_t period);
 };
 
