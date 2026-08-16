@@ -1,9 +1,9 @@
 #include "ClockEdit.hpp"
 
-#include "../StateManager.hpp"
 #include "../../utils/LowPower.h"
-#include "../../utils/Utils.hpp"
 #include "../../utils/PowerManager.hpp"
+#include "../../utils/Utils.hpp"
+#include "../StateManager.hpp"
 
 void ClockEdit::reload() {
     unsigned long now = millis();
@@ -49,10 +49,12 @@ void ClockEdit::loop(unsigned long now) {
     switch (buttonMenu_.scan(now)) {
     case Button::Click:
         timeManager_.setTime();
+        timeManager_.waitSleep(180000);
         manager_->switchToNextState();
         return;
     case Button::LongPress:
         timeManager_.setTime();
+        timeManager_.waitSleep(180000);
         manager_->switchToDefaultState();
         return;
     default:
@@ -69,12 +71,12 @@ void ClockEdit::loop(unsigned long now) {
 
     if (TimerTimeoutFix(&autoSaveTimer_, now)) {
         timeManager_.setTime(); // Perform the actual auto-save
+        timeManager_.waitSleep(180000);
         manager_->switchToDefaultState();
         return;
     }
 
-    LowPower.idle(SLEEP_250MS, ADC_OFF, TIMER2_ON, TIMER1_OFF, TIMER0_ON,
-                  SPI_OFF, USART0_OFF, TWI_OFF);
+    powerManager.sleep(SleepMode::Idle, SLEEP_250MS, false);
 }
 
 void ClockEdit::resetView(unsigned long now) {

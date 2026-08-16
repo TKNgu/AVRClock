@@ -10,6 +10,7 @@ class ClockSleep : public ClockState {
 
   private:
     Timer sleepTimer_ = CreateTimer(1000);
+    bool isNeedClear_ = true;
 };
 
 #endif // CLOCKSLEEP_HPP

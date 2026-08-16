@@ -15,7 +15,7 @@ public:
     void buzzer();
     void buzzerSilent();
 
-    void sleep(SleepMode mode, period_t period);
+    void sleep(SleepMode mode, period_t period, bool needAdc = true);
 
     void blockDeepSleep(unsigned long durationMs = 2000);
 

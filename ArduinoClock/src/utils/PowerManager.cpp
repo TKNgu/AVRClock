@@ -34,7 +34,7 @@ unsigned long PowerManager::getPeriodMs(period_t period) {
     }
 }
 
-void PowerManager::sleep(SleepMode mode, period_t period) {
+void PowerManager::sleep(SleepMode mode, period_t period, bool needAdc) {
     unsigned long now = millis();
     bool canDeepSleep = (mode == SleepMode::Deep) && ((long)(now - blockDeepSleepUntil_) >= 0);
 
@@ -45,7 +45,8 @@ void PowerManager::sleep(SleepMode mode, period_t period) {
         timer0_millis += getPeriodMs(period);
         interrupts();
     } else {
-        LowPower.idle(period, ADC_ON, TIMER2_ON, TIMER1_OFF, TIMER0_ON,
+        adc_t adcState = needAdc ? ADC_ON : ADC_OFF;
+        LowPower.idle(period, adcState, TIMER2_ON, TIMER1_OFF, TIMER0_ON,
                       SPI_OFF, USART0_OFF, TWI_OFF);
     }
 }
