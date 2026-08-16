@@ -17,6 +17,7 @@ struct ClockState : State2 {
 
     Timer sleepTimer;
     bool isNeedSleep = false;
+    bool isNeedClear = false;
 
     ClockState(StateManager2*);
 

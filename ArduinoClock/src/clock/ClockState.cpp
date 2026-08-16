@@ -28,6 +28,7 @@ void ClockState::reload() {
     clockEngine.reload();
     clockChime.reload();
     isNeedSleep = needSleep(clockEngine.hour, clockEngine.minutes);
+    isNeedClear = true;
 }
 
 void ClockState::loop() {
@@ -53,11 +54,21 @@ void ClockState::loop() {
         if (GetLight() > SLEEP_LIGHT_LEVEL && TimerTimeout(&sleepTimer)) {
             Buzzer();
         }
+        if (GetLight() > SLEEP_LIGHT_LEVEL) {
+            ShowTime(clockEngine.hour, clockEngine.minutes);
+            clockPoint.show(now);
+            isNeedClear = true;
+        } else if (isNeedClear) {
+            isNeedClear = false;
+            Clear();
+            PointOff();
+        }
         LowPower.idle(SLEEP_8S, ADC_ON, TIMER2_ON, TIMER1_OFF, TIMER0_ON,
                       SPI_OFF, USART0_OFF, TWI_OFF);
     } else {
         ShowTime(clockEngine.hour, clockEngine.minutes);
         clockPoint.show(now);
+        isNeedClear = true;
         LowPower.idle(SLEEP_500MS, ADC_ON, TIMER2_ON, TIMER1_OFF, TIMER0_ON,
                       SPI_OFF, USART0_OFF, TWI_OFF);
     }
