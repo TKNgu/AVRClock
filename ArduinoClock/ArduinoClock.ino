@@ -1,16 +1,15 @@
-#include "src/ArduinoClock.hpp"
-
 #include "src/StateManager2.hpp"
+#define DEBUG
 
-// ArduinoClock clock;
 StateManager2 stateManager;
 
 void setup() {
-  // clock.setup();
   stateManager.setUp();
+#ifdef DEBUG
+  Serial.begin(9600);
+#endif
 }
 
 void loop() {
-  // clock.loop();
   stateManager.loop();
 }

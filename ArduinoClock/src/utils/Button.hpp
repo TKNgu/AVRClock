@@ -1,7 +1,7 @@
 #ifndef Button_hpp
 #define Button_hpp
 
-#include "utils/Utils.hpp"
+#include "Utils.hpp"
 
 #define LONG_PRESS 1000
 #define SHORT_PRESS 100

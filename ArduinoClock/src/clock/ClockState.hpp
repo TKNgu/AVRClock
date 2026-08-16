@@ -2,6 +2,7 @@
 #define CLOCKSTATE_HPP
 
 #include "../StateManager2.hpp"
+#include "../utils/Button2.hpp"
 #include "ClockChime.hpp"
 #include "ClockEngine.hpp"
 #include "ClockLight.hpp"
@@ -12,8 +13,12 @@ struct ClockState : State2 {
     ClockPoint clockPoint;
     ClockChime clockChime;
     ClockLight clockLight;
+    Button2 buttonMenu;
 
-    ClockState(StateManager2* manager);
+    Timer sleepTimer;
+    bool isNeedSleep = false;
+
+    ClockState(StateManager2*);
 
     virtual void reload() override;
     virtual void loop() override;

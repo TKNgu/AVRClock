@@ -11,6 +11,7 @@ struct ClockEngine {
     unsigned char seconds;
 
     bool isUpdateMinute = false;
+    bool isUpdateDay = false;
 
     ClockEngine();
     void reload();

@@ -11,6 +11,9 @@
 #define LIGHT A1
 #define BUZZER_DEVICE 6
 
+#define MIN_LEVEL_OFFSET 0
+#define MAX_LEVEL_OFFSET 4
+
 static TTSDisplay display;
 static TTSTime time;
 static TTSTemp temp;
@@ -18,18 +21,18 @@ static KamaFilter temperatureFilter;
 
 static float maxLevel = 0x00;
 static float minLevel = 0xff;
+
 static int rangeLevel = 0xffff;
-static unsigned char lightLevel = 0x00;
 static KamaFilter lightFilter;
 
 void ReadLighLevel() {
     float tmpMin;
-    EEPROM.get(0, tmpMin);
+    EEPROM.get(MIN_LEVEL_OFFSET, tmpMin);
     if (tmpMin <= minLevel) {
         minLevel = tmpMin;
     }
     float tmpMax;
-    EEPROM.get(4, tmpMax);
+    EEPROM.get(MAX_LEVEL_OFFSET, tmpMax);
     if (tmpMax >= maxLevel) {
         maxLevel = tmpMax;
     }
@@ -179,30 +182,29 @@ void Buzzer() { tone(BUZZER_DEVICE, 2400, 60); }
 void BuzzerSilen() { noTone(BUZZER_DEVICE); }
 
 int GetTemperature() {
-    return 27;
-    // temperatureFilter.update(temp.get());
-    // return temperatureFilter.getValue();
+    temperatureFilter.update(temp.get());
+    return temperatureFilter.getValue();
 }
 
 int GetLight() {
-    // return 10;
     lightFilter.update(analogRead(LIGHT));
     return lightFilter.getValue();
 }
 
-void AutoLight() {
-    static int light;
-    light = GetLight();
+void AutoLight(int light) {
+    static unsigned char lightLevel = 0xff;
     if (light < minLevel) {
         minLevel = light;
-        EEPROM.put(0, minLevel);
+        EEPROM.put(MIN_LEVEL_OFFSET, minLevel);
+        delay(100);
     }
     if (light > maxLevel) {
         maxLevel = light;
-        EEPROM.put(4, maxLevel);
+        EEPROM.put(MAX_LEVEL_OFFSET, maxLevel);
+        delay(100);
     }
-    static unsigned char tmp;
-    tmp = (unsigned char)((light - minLevel) * 7.0f / (maxLevel - minLevel));
+    unsigned char tmp =
+        (unsigned char)(((light - minLevel) / (maxLevel - minLevel)) * 7.0f);
     if (tmp != lightLevel) {
         lightLevel = tmp;
         SetLightLevel(lightLevel);

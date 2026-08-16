@@ -34,8 +34,7 @@ typedef enum {
 void LedOn(const Led led);
 void LedOff(const Led led);
 void LedBlink(const Led led);
-float GetLigh();
-void AutoLight();
+void AutoLight(int);
 void ShowTemperature(int temperature);
 
 // Buzzer

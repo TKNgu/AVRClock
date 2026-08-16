@@ -1,6 +1,12 @@
 #include "Timer.hpp"
 #include <Arduino.h>
 
+void ResetTimer(Timer* timer, unsigned long now) {
+    timer->nextTime = now + timer->leng;
+}
+
+void ResetTimer(Timer* timer) { ResetTimer(timer, millis()); }
+
 Timer CreateTimer(unsigned long leng) {
     return Timer{
         .leng = leng,

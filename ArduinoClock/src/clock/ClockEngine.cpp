@@ -15,6 +15,7 @@ void ClockEngine::reload() {
 
 void ClockEngine::updateTime(unsigned long now) {
     isUpdateMinute = false;
+    isUpdateDay = false;
     if (TimerTimeoutFix(&this->syncTimer, now)) {
         GetTime(&hour, &minutes, &seconds);
         return;
@@ -24,18 +25,20 @@ void ClockEngine::updateTime(unsigned long now) {
     if (seconds < 60) {
         return;
     }
-
     timeOffset = now;
     seconds -= 60;
+
     minutes++;
     isUpdateMinute = true;
     if (minutes < 60) {
         return;
     }
-
     minutes -= 60;
+
     hour++;
-    if (hour >= 24) {
-        hour -= 24;
+    if (hour < 24) {
+        return;
     }
+    hour -= 24;
+    isUpdateDay = true;
 }
