@@ -2,8 +2,8 @@
 
 #include <Arduino.h>
 
-#include "../utils/Utils.hpp"
 #include "../utils/PowerManager.hpp"
+#include "../utils/Utils.hpp"
 
 #define UPDATE_TIME_TASK 3600000
 
@@ -74,28 +74,28 @@ void TimeManager::subHour(unsigned char value) {
 #define WAKE_MINUTE 00
 
 bool TimeManagerAdvance::needSleep() {
-    if (TimerTimeout(&waitSleepTimer)) {
-        const static unsigned int SLEEP_TIME = SLEEP_HOUR * 60 + SLEEP_MINUTE;
-        const static unsigned int WAKE_TIME = WAKE_HOUR * 60 + WAKE_MINUTE;
-        const unsigned int tmp = hour * 60 + minutes;
-        return tmp >= SLEEP_TIME || tmp < WAKE_TIME;
-    }
-    return false;
+    // if (TimerTimeout(&waitSleepTimer)) {
+    const static unsigned int SLEEP_TIME = SLEEP_HOUR * 60 + SLEEP_MINUTE;
+    const static unsigned int WAKE_TIME = WAKE_HOUR * 60 + WAKE_MINUTE;
+    const unsigned int tmp = hour * 60 + minutes;
+    return tmp >= SLEEP_TIME || tmp < WAKE_TIME;
+    // }
+    // return false;
 }
 
 bool TimeManagerAdvance::isNearWakeUp(unsigned int minutesBefore) {
     const unsigned int WAKE_TIME = WAKE_HOUR * 60 + WAKE_MINUTE;
     unsigned int tmp = hour * 60 + minutes;
-    
+
     int diff = WAKE_TIME - tmp;
     if (diff < 0) {
         diff += 24 * 60;
     }
-    
+
     return diff > 0 && diff <= (int)minutesBefore;
 }
 
 void TimeManagerAdvance::waitSleep(unsigned long duration) {
-    waitSleepTimer.leng = duration;
-    ResetTimer(&waitSleepTimer);
+    // waitSleepTimer.leng = duration;
+    // ResetTimer(&waitSleepTimer);
 }

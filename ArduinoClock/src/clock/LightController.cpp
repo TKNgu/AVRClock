@@ -58,6 +58,10 @@ void LightController::calculateBrightness(int light) {
         maxLightGlobal = maxLightLocal;
     }
 
+    if (maxLightGlobal < 1.0f) {
+        maxLightGlobal = 1.0f;
+    }
+
     unsigned char tmpLightLevel =
         (unsigned char)(light * 7.0f / maxLightGlobal);
     if (tmpLightLevel != lightLevel) {

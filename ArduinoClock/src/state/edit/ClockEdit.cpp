@@ -61,12 +61,17 @@ void ClockEdit::loop(unsigned long now) {
         break;
     }
 
-    if (blinkTimer_.blink(now)) {
-        displayBlinkFrame();
-        PointOff();
-    } else {
-        ShowTime(timeManager_.hour, timeManager_.minutes);
-        PointOn();
+    blinkTimer_.blink(now);
+    if (blinkTimer_.isChanged || isValueChanged_) {
+        isValueChanged_ = false;
+
+        if (blinkTimer_.isBlink) {
+            displayBlinkFrame();
+            PointOff();
+        } else {
+            ShowTime(timeManager_.hour, timeManager_.minutes);
+            PointOn();
+        }
     }
 
     if (TimerTimeoutFix(&autoSaveTimer_, now)) {
