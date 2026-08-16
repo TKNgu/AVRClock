@@ -21,12 +21,10 @@ float ArrayMax::update(unsigned value) {
         valueMaxIndex = 0;
     }
     EEPROM.put(SIZE_ITEM * sizeof(unsigned), valueMaxIndex);
-    delay(50);
 
     if (valueMax[valueMaxIndex] != value) {
         valueMax[valueMaxIndex] = value;
         EEPROM.put(valueMaxIndex * sizeof(unsigned), value);
-        delay(50);
     }
     return getValueMax();
 }

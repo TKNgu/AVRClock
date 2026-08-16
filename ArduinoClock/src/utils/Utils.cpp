@@ -178,9 +178,6 @@ void LedBlink(const Led led) {
     (isBlink = !isBlink) ? LedOn(led) : LedOff(led);
 }
 
-void Buzzer() { tone(BUZZER_DEVICE, 2400, 60); }
-void BuzzerSilen() { noTone(BUZZER_DEVICE); }
-
 int GetTemperature() {
     temperatureFilter.update(temp.get());
     return temperatureFilter.getValue();

@@ -38,9 +38,6 @@ void AutoLight(int);
 void ShowTemperature(int temperature);
 
 // Buzzer
-void Buzzer();
-void BuzzerSilen();
-
 // Sensor
 int GetLight();
 int GetTemperature();

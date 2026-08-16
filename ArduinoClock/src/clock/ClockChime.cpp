@@ -1,6 +1,7 @@
 #include "ClockChime.hpp"
 
 #include "../utils/Utils.hpp"
+#include "../utils/PowerManager.hpp"
 
 ClockChime::ClockChime() {
     unsigned char offset = 0;
@@ -21,7 +22,7 @@ void ClockChime::reload() {
             continue;
         }
         if (tmp == timePoint) {
-            Buzzer();
+            powerManager.buzzer();
             indexTimePoint++;
             break;
         }
