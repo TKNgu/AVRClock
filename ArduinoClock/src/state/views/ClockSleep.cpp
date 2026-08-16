@@ -52,12 +52,15 @@ void ClockSleep::loop(unsigned long now) {
         }
 
         isNeedClear_ = true;
-        if (blinkTimer_.blink(now)) {
-            ShowTime(timeManager_.hour, timeManager_.minutes);
-            PointOn();
-        } else {
-            Clear();
-            PointOff();
+        blinkTimer_.blink(now);
+        if (blinkTimer_.isChanged) {
+            if (blinkTimer_.isBlink) {
+                ShowTime(timeManager_.hour, timeManager_.minutes);
+                PointOn();
+            } else {
+                Clear();
+                PointOff();
+            }
         }
 
         powerManager.sleep(SleepMode::Idle, SLEEP_250MS);

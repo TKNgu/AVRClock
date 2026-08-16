@@ -9,6 +9,7 @@
 void ClockView::reload() {
     timeManager_.reload();
     chimeController_.reload();
+    ShowTime(timeManager_.hour, timeManager_.minutes);
 }
 
 void ClockView::loop(unsigned long now) {
@@ -20,6 +21,7 @@ void ClockView::loop(unsigned long now) {
         if (chimeController_.shouldChime()) {
             powerManager.buzzer();
         }
+        ShowTime(timeManager_.hour, timeManager_.minutes);
     }
 
     lightController_.updateLoop(now);
@@ -32,7 +34,6 @@ void ClockView::loop(unsigned long now) {
         return;
     }
 
-    ShowTime(timeManager_.hour, timeManager_.minutes);
     blinkTimer_.blink(now);
     if (blinkTimer_.isChanged) {
         blinkTimer_.isBlink ? PointOn() : PointOff();
