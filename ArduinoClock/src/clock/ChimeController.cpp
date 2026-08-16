@@ -1,9 +1,9 @@
-#include "ClockChime.hpp"
+#include "ChimeController.hpp"
 
 #include "../utils/Utils.hpp"
 #include "../utils/PowerManager.hpp"
 
-ClockChime::ClockChime() {
+ChimeController::ChimeController() {
     unsigned char offset = 0;
     for (unsigned char dayOfWeek = 1; dayOfWeek <= 7; dayOfWeek++) {
         timePoints[offset++] = TimePointInit(dayOfWeek, 5, 00);
@@ -13,7 +13,7 @@ ClockChime::ClockChime() {
     }
 }
 
-void ClockChime::reload() {
+void ChimeController::reload() {
     TimePoint timePoint = GetTimePoint();
     for (indexTimePoint = 0; indexTimePoint < HOURLY_CHIME_SIZE;
          indexTimePoint++) {
@@ -37,7 +37,7 @@ void ClockChime::reload() {
     minutesCount = nextTimePoint - timePoint;
 }
 
-bool ClockChime::check() {
+bool ChimeController::shouldChime() {
     if (minutesCount-- > 1) {
         return false;
     }

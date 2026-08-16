@@ -48,11 +48,11 @@ void ClockEdit::loop(unsigned long now) {
 
     switch (buttonMenu_.scan(now)) {
     case Button::Click:
-        clockEngine_.setTime();
+        timeManager_.setTime();
         manager_->switchToNextState();
         return;
     case Button::LongPress:
-        clockEngine_.setTime();
+        timeManager_.setTime();
         manager_->switchToDefaultState();
         return;
     default:
@@ -63,12 +63,12 @@ void ClockEdit::loop(unsigned long now) {
         displayBlinkFrame();
         PointOff();
     } else {
-        ShowTime(clockEngine_.hour, clockEngine_.minutes);
+        ShowTime(timeManager_.hour, timeManager_.minutes);
         PointOn();
     }
 
     if (TimerTimeoutFix(&autoSaveTimer_, now)) {
-        clockEngine_.setTime(); // Perform the actual auto-save
+        timeManager_.setTime(); // Perform the actual auto-save
         manager_->switchToDefaultState();
         return;
     }

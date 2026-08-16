@@ -17,7 +17,7 @@ void ClockSleep::reload() {
 
 void ClockSleep::loop(unsigned long now) {
     if (buttonMenu_.scan(now) == Button::LongPress) {
-        clockEngine_.waitSleep(1000);
+        timeManager_.waitSleep(1000);
         manager_->switchToDefaultState();
         return;
     }

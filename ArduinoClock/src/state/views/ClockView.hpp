@@ -1,8 +1,8 @@
 #ifndef CLOCKVIEW_HPP
 #define CLOCKVIEW_HPP
 
-#include "../../clock/ClockChime.hpp"
-#include "../../clock/ClockLight.hpp"
+#include "../../clock/ChimeController.hpp"
+#include "../../clock/LightController.hpp"
 #include "../State.hpp"
 
 class ClockView : public ClockState {
@@ -11,8 +11,8 @@ class ClockView : public ClockState {
     virtual void loop(unsigned long) override;
 
   private:
-    ClockChime clockChime_;
-    ClockLight clockLight_;
+    ChimeController chimeController_;
+    LightController lightController_;
 };
 
 #endif // CLOCKVIEW_HPP

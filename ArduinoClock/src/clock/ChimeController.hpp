@@ -1,18 +1,18 @@
-#ifndef CLOCKCHIME_HPP
-#define CLOCKCHIME_HPP
+#ifndef CHIMECONTROLLER_HPP
+#define CHIMECONTROLLER_HPP
 
 #include "../timer/TimePoint.hpp"
 
 #define HOURLY_CHIME_SIZE 28
 
-struct ClockChime {
+struct ChimeController {
     TimePoint timePoints[HOURLY_CHIME_SIZE];
     unsigned char indexTimePoint;
     unsigned long minutesCount;
 
-    ClockChime();
+    ChimeController();
     void reload();
-    bool check();
+    bool shouldChime();
 };
 
-#endif // CLOCKCHIME_HPP
+#endif // CHIMECONTROLLER_HPP

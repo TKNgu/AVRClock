@@ -1,4 +1,4 @@
-#include "ClockLight.hpp"
+#include "LightController.hpp"
 
 #include <Arduino.h>
 #include <EEPROM.h>
@@ -7,7 +7,7 @@
 
 #define LIGHT_LEVEL_WARNING 30
 
-ArrayMax::ArrayMax() {
+MovingMaxFilter::MovingMaxFilter() {
     for (unsigned index = 0; index < SIZE_ITEM; index++) {
         const unsigned offset = index * sizeof(unsigned);
         EEPROM.get(offset, valueMax[index]);
@@ -15,7 +15,7 @@ ArrayMax::ArrayMax() {
     EEPROM.get(SIZE_ITEM * sizeof(unsigned), valueMaxIndex);
 }
 
-float ArrayMax::update(unsigned value) {
+float MovingMaxFilter::addValue(unsigned value) {
     valueMaxIndex++;
     if (valueMaxIndex >= SIZE_ITEM) {
         valueMaxIndex = 0;
@@ -26,10 +26,10 @@ float ArrayMax::update(unsigned value) {
         valueMax[valueMaxIndex] = value;
         EEPROM.put(valueMaxIndex * sizeof(unsigned), value);
     }
-    return getValueMax();
+    return getMovingMax();
 }
 
-float ArrayMax::getValueMax() {
+float MovingMaxFilter::getMovingMax() {
     float avgValueMax = 0.f;
     for (unsigned index = 0; index < SIZE_ITEM; index++) {
         const unsigned indexValue = (valueMaxIndex + index) % SIZE_ITEM;
@@ -38,18 +38,18 @@ float ArrayMax::getValueMax() {
     return avgValueMax;
 }
 
-ClockLight::ClockLight() : arrayMax() {
-    maxLightGlobal = arrayMax.getValueMax();
+LightController::LightController() : movingMaxFilter() {
+    maxLightGlobal = movingMaxFilter.getMovingMax();
 }
 
-void ClockLight::check(const unsigned long now) {
+void LightController::updateLoop(const unsigned long now) {
     if (TimerTimeoutFix(&timer, now)) {
-        update(GetLight());
+        calculateBrightness(GetLight());
         (lightLevel == 0) ? LedOn(led2) : LedOff(led2);
     }
 }
 
-void ClockLight::update(int light) {
+void LightController::calculateBrightness(int light) {
     if (light > maxLightLocal) {
         maxLightLocal = light;
     }
@@ -66,7 +66,7 @@ void ClockLight::update(int light) {
     }
 }
 
-void ClockLight::updateGlobal() {
-    maxLightGlobal = arrayMax.update(maxLightLocal);
+void LightController::commitDailyMaxLight() {
+    maxLightGlobal = movingMaxFilter.addValue(maxLightLocal);
     maxLightLocal = GetLight();
 }

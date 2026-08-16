@@ -1,4 +1,4 @@
-#include "ClockEngine.hpp"
+#include "TimeManager.hpp"
 
 #include <Arduino.h>
 
@@ -6,16 +6,16 @@
 
 #define UPDATE_TIME_TASK 3600000
 
-ClockEngine::ClockEngine() : syncTimer(CreateTimer(UPDATE_TIME_TASK)) {}
+TimeManager::TimeManager() : syncTimer(CreateTimer(UPDATE_TIME_TASK)) {}
 
-void ClockEngine::reload() {
+void TimeManager::reload() {
     GetTime(&hour, &minutes, &seconds);
     timeOffset = millis() - (unsigned long)seconds * 1000;
 }
 
-void ClockEngine::setTime() { SetTime(hour, minutes); }
+void TimeManager::setTime() { SetTime(hour, minutes); }
 
-void ClockEngine::updateTime(unsigned long now) {
+void TimeManager::updateTime(unsigned long now) {
     isUpdateMinute = false;
     isUpdateDay = false;
     if (TimerTimeoutFix(&this->syncTimer, now)) {
@@ -46,25 +46,25 @@ void ClockEngine::updateTime(unsigned long now) {
     isUpdateDay = true;
 }
 
-void ClockEngine::addMinute(unsigned char value) {
+void TimeManager::addMinute(unsigned char value) {
     minutes += value;
     if (minutes >= 60) {
         minutes -= 60;
     }
 }
 
-void ClockEngine::subMinute(unsigned char value) {
+void TimeManager::subMinute(unsigned char value) {
     minutes = minutes >= value ? minutes - value : minutes + 60 - value;
 }
 
-void ClockEngine::addHour(unsigned char value) {
+void TimeManager::addHour(unsigned char value) {
     hour += value;
     if (hour >= 24) {
         hour -= 24;
     }
 }
 
-void ClockEngine::subHour(unsigned char value) {
+void TimeManager::subHour(unsigned char value) {
     hour = hour >= value ? hour - value : hour + 24 - value;
 }
 #define SLEEP_HOUR 23
@@ -72,7 +72,7 @@ void ClockEngine::subHour(unsigned char value) {
 #define WAKE_HOUR 5
 #define WAKE_MINUTE 00
 
-bool ClockEngineAdvance::needSleep() {
+bool TimeManagerAdvance::needSleep() {
     if (TimerTimeout(&waitSleepTimer)) {
         const static unsigned int SLEEP_TIME = SLEEP_HOUR * 60 + SLEEP_MINUTE;
         const static unsigned int WAKE_TIME = WAKE_HOUR * 60 + WAKE_MINUTE;
@@ -82,7 +82,7 @@ bool ClockEngineAdvance::needSleep() {
     return false;
 }
 
-void ClockEngineAdvance::waitSleep(unsigned long duration) {
+void TimeManagerAdvance::waitSleep(unsigned long duration) {
     waitSleepTimer.leng = duration;
     ResetTimer(&waitSleepTimer);
 }

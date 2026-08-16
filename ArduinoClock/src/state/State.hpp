@@ -4,7 +4,7 @@
 #include <Arduino.h>
 
 #include "../button/Button.hpp"
-#include "../clock/ClockEngine.hpp"
+#include "../clock/TimeManager.hpp"
 #include "../timer/BlinkTimer.hpp"
 
 class StateManager;
@@ -30,7 +30,7 @@ class ClockState : public State {
 
   protected:
     inline static BlinkTimer blinkTimer_ = BlinkTimer(500);
-    inline static ClockEngineAdvance clockEngine_ = ClockEngineAdvance();
+    inline static TimeManagerAdvance timeManager_ = TimeManagerAdvance();
     inline static unsigned long deepSleepDelayStart_ = 0;
     bool canDeepSleep(unsigned long now) {
         return (now - deepSleepDelayStart_) > 4000;

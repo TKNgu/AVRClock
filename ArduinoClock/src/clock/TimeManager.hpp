@@ -1,11 +1,11 @@
-#ifndef CLOCKENGINE_HPP
-#define CLOCKENGINE_HPP
+#ifndef TIMEMANAGER_HPP
+#define TIMEMANAGER_HPP
 
 #include "../timer/Timer.hpp"
 
 #define WAIT_SLEEP_TIME 300000
 
-struct ClockEngine {
+struct TimeManager {
     Timer syncTimer;
     Timer waitSleepTimer = CreateTimer(WAIT_SLEEP_TIME);
 
@@ -17,7 +17,7 @@ struct ClockEngine {
     bool isUpdateMinute = false;
     bool isUpdateDay = false;
 
-    ClockEngine();
+    TimeManager();
     void reload();
     void setTime();
     void updateTime(unsigned long);
@@ -27,10 +27,10 @@ struct ClockEngine {
     void subHour(unsigned char);
 };
 
-class ClockEngineAdvance : public ClockEngine {
+class TimeManagerAdvance : public TimeManager {
   public:
     bool needSleep();
     void waitSleep(unsigned long duration);
 };
 
-#endif // CLOCKENGINE_HPP
+#endif // TIMEMANAGER_HPP

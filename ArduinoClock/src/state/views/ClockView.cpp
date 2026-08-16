@@ -7,24 +7,24 @@
 #include "../StateManager.hpp"
 
 void ClockView::reload() {
-    clockEngine_.reload();
-    clockChime_.reload();
+    timeManager_.reload();
+    chimeController_.reload();
 }
 
 void ClockView::loop(unsigned long now) {
-    if (clockEngine_.isUpdateMinute) {
-        if (clockEngine_.needSleep()) {
+    if (timeManager_.isUpdateMinute) {
+        if (timeManager_.needSleep()) {
             manager_->switchToSleepState();
             return;
         }
-        if (clockChime_.check()) {
+        if (chimeController_.shouldChime()) {
             powerManager.buzzer();
         }
     }
 
-    clockLight_.check(now);
-    if (clockEngine_.isUpdateDay) {
-        clockLight_.updateGlobal();
+    lightController_.updateLoop(now);
+    if (timeManager_.isUpdateDay) {
+        lightController_.commitDailyMaxLight();
     }
 
     if (buttonMenu_.scan(now) == Button::Click) {
@@ -32,7 +32,7 @@ void ClockView::loop(unsigned long now) {
         return;
     }
 
-    ShowTime(clockEngine_.hour, clockEngine_.minutes);
+    ShowTime(timeManager_.hour, timeManager_.minutes);
     blinkTimer_.blink(now) ? PointOn() : PointOff();
     
     powerManager.sleep(SleepMode::Deep, SLEEP_250MS);
