@@ -18,20 +18,27 @@ struct TimeManager {
     bool isUpdateDay = false;
 
     TimeManager();
+    virtual ~TimeManager() = default;
+
     void reload();
     void setTime();
     void updateTime(unsigned long);
-    void addMinute(unsigned char);
-    void subMinute(unsigned char);
-    void addHour(unsigned char);
-    void subHour(unsigned char);
+    void increaseMinute(unsigned char);
+    void decreaseMinute(unsigned char);
+    void increaseHour(unsigned char);
+    void decreaseHour(unsigned char);
 };
 
 class TimeManagerAdvance : public TimeManager {
   public:
+    TimeManagerAdvance();
+
     bool needSleep();
     bool isNearWakeUp(unsigned int minutesBefore);
     void waitSleep(unsigned long duration);
+
+  private:
+    unsigned int sleepTime;
 };
 
 #endif // TIMEMANAGER_HPP

@@ -3,9 +3,9 @@
 void HourEdit::displayBlinkFrame() { ShowMin(timeManager_.minutes); }
 
 void HourEdit::increaseValue(unsigned char step) {
-    timeManager_.addHour(step);
+    timeManager_.increaseHour(step);
 }
 
 void HourEdit::decreaseValue(unsigned char step) {
-    timeManager_.subHour(step);
+    timeManager_.decreaseHour(step);
 }

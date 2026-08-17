@@ -47,40 +47,45 @@ void TimeManager::updateTime(unsigned long now) {
     isUpdateDay = true;
 }
 
-void TimeManager::addMinute(unsigned char value) {
+void TimeManager::increaseMinute(unsigned char value) {
     minutes += value;
     if (minutes >= 60) {
         minutes -= 60;
     }
 }
 
-void TimeManager::subMinute(unsigned char value) {
+void TimeManager::decreaseMinute(unsigned char value) {
     minutes = minutes >= value ? minutes - value : minutes + 60 - value;
 }
 
-void TimeManager::addHour(unsigned char value) {
+void TimeManager::increaseHour(unsigned char value) {
     hour += value;
     if (hour >= 24) {
         hour -= 24;
     }
 }
 
-void TimeManager::subHour(unsigned char value) {
+void TimeManager::decreaseHour(unsigned char value) {
     hour = hour >= value ? hour - value : hour + 24 - value;
 }
+
 #define SLEEP_HOUR 23
 #define SLEEP_MINUTE 45
 #define WAKE_HOUR 5
 #define WAKE_MINUTE 00
 
+TimeManagerAdvance::TimeManagerAdvance() {
+    sleepTime = SLEEP_HOUR * 60 + SLEEP_MINUTE;
+}
+
 bool TimeManagerAdvance::needSleep() {
-    // if (TimerTimeout(&waitSleepTimer)) {
-    const static unsigned int SLEEP_TIME = SLEEP_HOUR * 60 + SLEEP_MINUTE;
-    const static unsigned int WAKE_TIME = WAKE_HOUR * 60 + WAKE_MINUTE;
     const unsigned int tmp = hour * 60 + minutes;
-    return tmp >= SLEEP_TIME || tmp < WAKE_TIME;
-    // }
-    // return false;
+    static const unsigned int wakeUpTime = WAKE_HOUR * 60 + WAKE_MINUTE;
+    const bool status = tmp >= sleepTime || tmp < wakeUpTime;
+    if (sleepTime >= wakeUpTime && tmp >= wakeUpTime) {
+        sleepTime = SLEEP_HOUR * 60 + SLEEP_MINUTE;
+    }
+    return status;
 }
 
 bool TimeManagerAdvance::isNearWakeUp(unsigned int minutesBefore) {
@@ -96,6 +101,14 @@ bool TimeManagerAdvance::isNearWakeUp(unsigned int minutesBefore) {
 }
 
 void TimeManagerAdvance::waitSleep(unsigned long duration) {
-    // waitSleepTimer.leng = duration;
-    // ResetTimer(&waitSleepTimer);
+    char tmpMinutes = minutes + duration;
+    char tmpHours = hour;
+    if (tmpMinutes >= 60) {
+        tmpMinutes -= 60;
+        tmpHours++;
+        if (tmpHours >= 24) {
+            tmpHours = 0;
+        }
+    }
+    sleepTime = tmpHours * 60 + tmpMinutes;
 }

@@ -21,9 +21,9 @@ void ClockEdit::loop(unsigned long now) {
     case Button::LongPress:
         if (TimerTimeoutFix(&longPressTimer_, now)) {
             increaseValue(5);
-            resetView(now);
             return;
         }
+        resetView(now);
         break;
     default:
         break;
@@ -38,9 +38,9 @@ void ClockEdit::loop(unsigned long now) {
     case Button::LongPress:
         if (TimerTimeoutFix(&longPressTimer_, now)) {
             decreaseValue(5);
-            resetView(now);
             return;
         }
+        resetView(now);
         break;
     default:
         break;
@@ -49,12 +49,12 @@ void ClockEdit::loop(unsigned long now) {
     switch (buttonMenu_.scan(now)) {
     case Button::Click:
         timeManager_.setTime();
-        timeManager_.waitSleep(180000);
+        timeManager_.waitSleep(5);
         manager_->switchToNextState();
         return;
     case Button::LongPress:
         timeManager_.setTime();
-        timeManager_.waitSleep(180000);
+        timeManager_.waitSleep(5);
         manager_->switchToDefaultState();
         return;
     default:
@@ -76,7 +76,7 @@ void ClockEdit::loop(unsigned long now) {
 
     if (TimerTimeoutFix(&autoSaveTimer_, now)) {
         timeManager_.setTime(); // Perform the actual auto-save
-        timeManager_.waitSleep(180000);
+        timeManager_.waitSleep(5);
         manager_->switchToDefaultState();
         return;
     }
