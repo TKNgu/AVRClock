@@ -1,7 +1,7 @@
 #include "State.hpp"
 
-#include <Arduino.h>
 #include "../utils/PowerManager.hpp"
+#include <Arduino.h>
 
 void ClockState::loop() {
     unsigned long now = powerManager.getMillis();

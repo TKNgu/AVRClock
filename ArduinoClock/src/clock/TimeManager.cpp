@@ -74,25 +74,34 @@ void TimeManager::decreaseHour(unsigned char value) {
 #define WAKE_HOUR 5
 #define WAKE_MINUTE 00
 
-TimeManagerAdvance::TimeManagerAdvance() {
-    sleepTime = SLEEP_HOUR * 60 + SLEEP_MINUTE;
+static const unsigned int wakeUpTime = WAKE_HOUR * 60 + WAKE_MINUTE;
+static const unsigned int sleepTime = SLEEP_HOUR * 60 + SLEEP_MINUTE;
+
+static bool inInterval(unsigned int T, unsigned int start, unsigned int end) {
+    if (start <= end) {
+        return T >= start && T < end;
+    } else {
+        return T >= start || T < end;
+    }
 }
+
+TimeManagerAdvance::TimeManagerAdvance() { dynamicSleepTime = sleepTime; }
 
 bool TimeManagerAdvance::needSleep() {
     const unsigned int tmp = hour * 60 + minutes;
-    static const unsigned int wakeUpTime = WAKE_HOUR * 60 + WAKE_MINUTE;
-    const bool status = tmp >= sleepTime || tmp < wakeUpTime;
-    if (sleepTime >= wakeUpTime && tmp >= wakeUpTime) {
-        sleepTime = SLEEP_HOUR * 60 + SLEEP_MINUTE;
+
+    unsigned int safeResetTimeEnd = (sleepTime + 24 * 60 - 60) % (24 * 60);
+    if (inInterval(tmp, wakeUpTime, safeResetTimeEnd)) {
+        dynamicSleepTime = sleepTime;
     }
-    return status;
+
+    return inInterval(tmp, dynamicSleepTime, wakeUpTime);
 }
 
 bool TimeManagerAdvance::isNearWakeUp(unsigned int minutesBefore) {
-    const unsigned int WAKE_TIME = WAKE_HOUR * 60 + WAKE_MINUTE;
     unsigned int tmp = hour * 60 + minutes;
 
-    int diff = WAKE_TIME - tmp;
+    int diff = wakeUpTime - tmp;
     if (diff < 0) {
         diff += 24 * 60;
     }
@@ -101,14 +110,6 @@ bool TimeManagerAdvance::isNearWakeUp(unsigned int minutesBefore) {
 }
 
 void TimeManagerAdvance::waitSleep(unsigned long duration) {
-    char tmpMinutes = minutes + duration;
-    char tmpHours = hour;
-    if (tmpMinutes >= 60) {
-        tmpMinutes -= 60;
-        tmpHours++;
-        if (tmpHours >= 24) {
-            tmpHours = 0;
-        }
-    }
-    sleepTime = tmpHours * 60 + tmpMinutes;
+    unsigned int totalMinutes = hour * 60 + minutes + duration;
+    dynamicSleepTime = totalMinutes % (24 * 60);
 }

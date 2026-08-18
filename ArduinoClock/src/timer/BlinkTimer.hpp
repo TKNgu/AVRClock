@@ -5,12 +5,11 @@
 
 struct BlinkTimer {
     Timer timer;
-    bool isBlink = false;
-    bool isChanged = true;
+    bool isBlink = true;
 
     BlinkTimer(unsigned long);
-    void reset(unsigned long);
     bool blink(unsigned long);
+    void reset(unsigned long, bool = false);
 };
 
 #endif // BLINKTIMER_HPP

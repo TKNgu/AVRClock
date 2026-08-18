@@ -1,6 +1,6 @@
 #include "Timer.hpp"
-#include <Arduino.h>
 #include "../utils/PowerManager.hpp"
+#include <Arduino.h>
 
 void ResetTimer(Timer* timer, unsigned long now) {
     timer->nextTime = now + timer->leng;
@@ -23,4 +23,6 @@ bool TimerTimeoutFix(Timer* timer, unsigned long timeNow) {
     return true;
 }
 
-bool TimerTimeout(Timer* timer) { return TimerTimeoutFix(timer, powerManager.getMillis()); }
+bool TimerTimeout(Timer* timer) {
+    return TimerTimeoutFix(timer, powerManager.getMillis());
+}

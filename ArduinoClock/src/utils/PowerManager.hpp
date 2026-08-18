@@ -3,13 +3,10 @@
 
 #include "LowPower.h"
 
-enum class SleepMode {
-    Deep,
-    Idle
-};
+enum class SleepMode { Deep, Idle };
 
 class PowerManager {
-public:
+  public:
     PowerManager() = default;
 
     void buzzer();
@@ -21,7 +18,7 @@ public:
 
     unsigned long getMillis();
 
-private:
+  private:
     unsigned long blockDeepSleepUntil_ = 0;
     unsigned long sleepCompensation_ = 0;
     unsigned long getPeriodMs(period_t period);

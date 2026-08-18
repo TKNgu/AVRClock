@@ -12,9 +12,6 @@ void ClockSleep::reload() {
     LedOff(led2);
     LedOff(led3);
     LedOff(led4);
-    ResetTimer(&sleepTimer_);
-    isNeedClear_ = true;
-    isNearWakeUpSynced_ = false;
 }
 
 void ClockSleep::loop(unsigned long now) {
@@ -23,46 +20,25 @@ void ClockSleep::loop(unsigned long now) {
         return;
     }
 
+    if (GetLight() > SLEEP_LIGHT_LEVEL) {
+        if (blinkTimer.blink(now)) {
+            powerManager.buzzer();
+            (blinkTimer.isBlink = !blinkTimer.isBlink)
+                ? Clear()
+                : ShowTime(timeManager_.hour, timeManager_.minutes);
+            PointOn();
+            isNeedClear = true;
+        }
+    } else if (isNeedClear) {
+        isNeedClear = false;
+        Clear();
+        PointOff();
+    }
+
     if (buttonMenu_.scan(now) == Button::LongPress) {
-        timeManager_.waitSleep(5);
         manager_->switchToDefaultState();
         return;
     }
 
-    if (GetLight() < SLEEP_LIGHT_LEVEL) {
-        if (isNeedClear_) {
-            isNeedClear_ = false;
-            Clear();
-            PointOff();
-        }
-
-        if (timeManager_.isNearWakeUp(10)) {
-            if (!isNearWakeUpSynced_) {
-                timeManager_.reload();
-                isNearWakeUpSynced_ = true;
-            }
-            powerManager.sleep(SleepMode::Idle, SLEEP_1S);
-        } else {
-            isNearWakeUpSynced_ = false;
-            powerManager.sleep(SleepMode::Deep, SLEEP_1S);
-        }
-    } else {
-        if (TimerTimeoutFix(&sleepTimer_, now)) {
-            powerManager.buzzer();
-        }
-
-        isNeedClear_ = true;
-        blinkTimer_.blink(now);
-        if (blinkTimer_.isChanged) {
-            if (blinkTimer_.isBlink) {
-                ShowTime(timeManager_.hour, timeManager_.minutes);
-                PointOn();
-            } else {
-                Clear();
-                PointOff();
-            }
-        }
-
-        powerManager.sleep(SleepMode::Idle, SLEEP_250MS);
-    }
+    powerManager.sleep(SleepMode::Idle, SLEEP_1S);
 }

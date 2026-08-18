@@ -9,9 +9,8 @@ class ClockSleep : public ClockState {
     virtual void loop(unsigned long) override;
 
   private:
-    Timer sleepTimer_ = CreateTimer(1000);
-    bool isNeedClear_ = true;
-    bool isNearWakeUpSynced_ = false;
+    BlinkTimer blinkTimer = BlinkTimer(1000);
+    bool isNeedClear = true;
 };
 
 #endif // CLOCKSLEEP_HPP

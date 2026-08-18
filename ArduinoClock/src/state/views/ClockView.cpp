@@ -29,15 +29,14 @@ void ClockView::loop(unsigned long now) {
         lightController_.commitDailyMaxLight();
     }
 
+    if (blinkTimer_.blink(now)) {
+        (blinkTimer_.isBlink = !blinkTimer_.isBlink) ? PointOn() : PointOff();
+    }
+
     if (buttonMenu_.scan(now) == Button::Click) {
         manager_->switchToNextState();
         return;
     }
 
-    blinkTimer_.blink(now);
-    if (blinkTimer_.isChanged) {
-        blinkTimer_.isBlink ? PointOn() : PointOff();
-    }
-    
     powerManager.sleep(SleepMode::Idle, SLEEP_250MS);
 }

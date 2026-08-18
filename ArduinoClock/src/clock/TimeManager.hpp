@@ -38,7 +38,7 @@ class TimeManagerAdvance : public TimeManager {
     void waitSleep(unsigned long duration);
 
   private:
-    unsigned int sleepTime;
+    unsigned int dynamicSleepTime;
 };
 
 #endif // TIMEMANAGER_HPP

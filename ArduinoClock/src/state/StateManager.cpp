@@ -2,8 +2,8 @@
 
 #include <Arduino.h> // NOLINT
 
-#include "../utils/Utils.hpp"
 #include "../utils/PowerManager.hpp"
+#include "../utils/Utils.hpp"
 
 StateManager::StateManager() {
     states_[IdClockShow] = &clockViewState_;

@@ -4,18 +4,11 @@
 
 BlinkTimer::BlinkTimer(unsigned long leng) : timer(CreateTimer(leng)) {}
 
-void BlinkTimer::reset(unsigned long now) {
-    ResetTimer(&timer, now);
-    isBlink = false;
-    isChanged = true;
+bool BlinkTimer::blink(unsigned long now) {
+    return TimerTimeoutFix(&timer, now);
 }
 
-bool BlinkTimer::blink(unsigned long now) {
-    if (TimerTimeoutFix(&timer, now)) {
-        isBlink = !isBlink;
-        isChanged = true;
-    } else {
-        isChanged = false;
-    }
-    return isBlink;
+void BlinkTimer::reset(unsigned long now, bool isBlink) {
+    ResetTimer(&timer, now);
+    this->isBlink = isBlink;
 }

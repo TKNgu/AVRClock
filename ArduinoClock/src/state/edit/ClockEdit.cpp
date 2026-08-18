@@ -1,29 +1,27 @@
 #include "ClockEdit.hpp"
 
-#include "../../utils/LowPower.h"
 #include "../../utils/PowerManager.hpp"
 #include "../../utils/Utils.hpp"
 #include "../StateManager.hpp"
 
 void ClockEdit::reload() {
     unsigned long now = powerManager.getMillis();
+    blinkTimer_.reset(now, true);
     ResetTimer(&autoSaveTimer_, now);
-    blinkTimer_.reset(now);
+    ShowTime(timeManager_.hour, timeManager_.minutes);
 }
 
 void ClockEdit::loop(unsigned long now) {
     switch (buttonUp_.scan(now)) {
     case Button::Click:
         increaseValue(1);
-        powerManager.buzzer();
         resetView(now);
-        return;
+        break;
     case Button::LongPress:
         if (TimerTimeoutFix(&longPressTimer_, now)) {
             increaseValue(5);
-            return;
+            resetView(now);
         }
-        resetView(now);
         break;
     default:
         break;
@@ -32,15 +30,13 @@ void ClockEdit::loop(unsigned long now) {
     switch (buttonDown_.scan(now)) {
     case Button::Click:
         decreaseValue(1);
-        powerManager.buzzer();
         resetView(now);
-        return;
+        break;
     case Button::LongPress:
         if (TimerTimeoutFix(&longPressTimer_, now)) {
             decreaseValue(5);
-            return;
+            resetView(now);
         }
-        resetView(now);
         break;
     default:
         break;
@@ -49,42 +45,37 @@ void ClockEdit::loop(unsigned long now) {
     switch (buttonMenu_.scan(now)) {
     case Button::Click:
         timeManager_.setTime();
-        timeManager_.waitSleep(5);
         manager_->switchToNextState();
         return;
     case Button::LongPress:
         timeManager_.setTime();
-        timeManager_.waitSleep(5);
         manager_->switchToDefaultState();
         return;
     default:
         break;
     }
 
-    blinkTimer_.blink(now);
-    if (blinkTimer_.isChanged || isValueChanged_) {
-        isValueChanged_ = false;
-
-        if (blinkTimer_.isBlink) {
-            displayBlinkFrame();
-            PointOff();
-        } else {
-            ShowTime(timeManager_.hour, timeManager_.minutes);
-            PointOn();
-        }
-    }
-
     if (TimerTimeoutFix(&autoSaveTimer_, now)) {
-        timeManager_.setTime(); // Perform the actual auto-save
-        timeManager_.waitSleep(5);
+        timeManager_.setTime();
         manager_->switchToDefaultState();
         return;
+    }
+
+    if (blinkTimer_.blink(now)) {
+        if ((blinkTimer_.isBlink = !blinkTimer_.isBlink)) {
+            ShowTime(timeManager_.hour, timeManager_.minutes);
+            PointOn();
+        } else {
+            displayBlinkFrame();
+            PointOff();
+        }
     }
 
     powerManager.sleep(SleepMode::Idle, SLEEP_250MS, false);
 }
 
 void ClockEdit::resetView(unsigned long now) {
-    ResetTimer(&autoSaveTimer_, now);
     blinkTimer_.reset(now);
+    ResetTimer(&autoSaveTimer_, now);
+    ShowTime(timeManager_.hour, timeManager_.minutes);
 }
