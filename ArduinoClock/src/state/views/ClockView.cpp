@@ -10,7 +10,7 @@ void ClockView::reload() {
     unsigned long now = powerManager.getMillis();
     timeManager.reload(now);
     chimeController.reload(timeManager.dayOfWeek, timeManager.hour,
-                            timeManager.minutes);
+                           timeManager.minutes);
     ShowTime(timeManager.hour, timeManager.minutes);
 }
 
@@ -44,5 +44,5 @@ void ClockView::loop(unsigned long now) {
         return;
     }
 
-    powerManager.sleep(SleepMode::Idle, SLEEP_250MS);
+    powerManager.sleep(PowerManager::SleepTime::SLEEP_120MS);
 }

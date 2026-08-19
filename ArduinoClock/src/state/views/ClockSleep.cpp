@@ -44,5 +44,5 @@ void ClockSleep::loop(unsigned long now) {
         manager->switchToDefaultState();
     }
 
-    powerManager.sleep(SleepMode::Idle, SLEEP_1S);
+    powerManager.sleep(PowerManager::SleepTime::SLEEP_120MS);
 }

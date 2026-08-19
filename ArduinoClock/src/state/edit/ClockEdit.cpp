@@ -71,7 +71,7 @@ void ClockEdit::loop(unsigned long now) {
         }
     }
 
-    powerManager.sleep(SleepMode::Idle, SLEEP_250MS, false);
+    powerManager.sleep(100);
 }
 
 void ClockEdit::resetView(unsigned long now) {
