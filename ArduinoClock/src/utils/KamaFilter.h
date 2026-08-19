@@ -6,7 +6,7 @@
 class KamaFilter {
 public:
     KamaFilter(uint8_t period = 10, uint8_t fast = 2, uint8_t slow = 30);
-    ~KamaFilter() { delete[] _buffer; }
+    ~KamaFilter() { delete[] buffer; }
     
     // Prevent copying because we have raw pointers
     KamaFilter(const KamaFilter&) = delete;
@@ -17,10 +17,10 @@ public:
     float getValue();
 
 private:
-    uint8_t _period, _fastSC, _slowSC;
-    float _kama;
-    int *_buffer;
-    int _index;
+    uint8_t period, fastSC, slowSC;
+    float kama;
+    int *buffer;
+    int index;
 };
 
 #endif

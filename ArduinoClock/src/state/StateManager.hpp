@@ -26,14 +26,14 @@ class StateManager {
         IdStateCount,
     };
 
-    ClockSleep sleepState_;
-    ClockView clockViewState_;
-    HourEdit hourEditState_;
-    MinutesEdit minutesEditState_;
+    ClockSleep sleepState;
+    ClockView clockViewState;
+    HourEdit hourEditState;
+    MinutesEdit minutesEditState;
 
-    State* states_[IdStateCount];
-    State* currentState_;
-    StateId currentStateId_;
+    State* states[IdStateCount];
+    State* currentState;
+    StateId currentStateId;
 
     void applyStateTransition();
 };

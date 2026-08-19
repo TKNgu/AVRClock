@@ -11,8 +11,8 @@ class ClockView : public ClockState {
     virtual void loop(unsigned long) override;
 
   private:
-    ChimeController chimeController_;
-    LightController lightController_;
+    ChimeController chimeController;
+    LightController lightController;
 };
 
 #endif // CLOCKVIEW_HPP

@@ -38,14 +38,14 @@ class TTSTemp{
 
 private:
 
-    int __pin;
+    int pin;
 
     
 public:
 
     TTSTemp()
     {
-        __pin = PINTEMP;
+        pin = PINTEMP;
     }
     
     int get()                                   // get temperature
@@ -54,7 +54,7 @@ public:
 
         for(int i=0; i<32; i++)
         {
-            a+=analogRead(__pin);
+            a+=analogRead(pin);
         }
         
         a >>= 5;

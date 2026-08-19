@@ -6,37 +6,37 @@
 #include "../utils/Utils.hpp"
 
 StateManager::StateManager() {
-    states_[IdClockShow] = &clockViewState_;
-    states_[IdHourEdit] = &hourEditState_;
-    states_[IdMinutesEdit] = &minutesEditState_;
+    states[IdClockShow] = &clockViewState;
+    states[IdHourEdit] = &hourEditState;
+    states[IdMinutesEdit] = &minutesEditState;
 }
 
 void StateManager::setup() {
-    State::manager_ = this;
+    State::manager = this;
     HardwareInit();
     switchToDefaultState();
     // switchToSleepState();
 }
 
-void StateManager::loop() { currentState_->loop(); }
+void StateManager::loop() { currentState->loop(); }
 
 void StateManager::switchToNextState() {
-    currentStateId_ = (StateId)((currentStateId_ + 1) % IdStateCount);
+    currentStateId = (StateId)((currentStateId + 1) % IdStateCount);
     applyStateTransition();
 }
 
 void StateManager::switchToDefaultState() {
-    currentStateId_ = IdClockShow;
+    currentStateId = IdClockShow;
     applyStateTransition();
 }
 
 void StateManager::switchToSleepState() {
-    currentState_ = &sleepState_;
-    currentState_->reload();
+    currentState = &sleepState;
+    currentState->reload();
 }
 
 void StateManager::applyStateTransition() {
-    currentState_ = states_[currentStateId_];
-    currentState_->reload();
+    currentState = states[currentStateId];
+    currentState->reload();
     powerManager.buzzer();
 }

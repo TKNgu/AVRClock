@@ -19,8 +19,8 @@ class State {
     virtual void loop() = 0;
 
   protected:
-    inline static StateManager* manager_ = nullptr;
-    inline static Button buttonMenu_ = Button(Key::KeyMenu);
+    inline static StateManager* manager = nullptr;
+    inline static Button buttonMenu = Button(Key::KeyMenu);
 };
 
 class ClockState : public State {
@@ -29,8 +29,8 @@ class ClockState : public State {
     virtual void loop(unsigned long) = 0;
 
   protected:
-    inline static BlinkTimer blinkTimer_ = BlinkTimer(500);
-    inline static TimeManagerAdvance timeManager_ = TimeManagerAdvance();
+    inline static BlinkTimer blinkTimer = BlinkTimer(500);
+    inline static TimeManagerAdvance timeManager = TimeManagerAdvance();
 };
 
 #endif // STATE2_HPP

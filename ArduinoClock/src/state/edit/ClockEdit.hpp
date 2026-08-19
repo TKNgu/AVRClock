@@ -14,10 +14,10 @@ class ClockEdit : public ClockState {
     virtual void decreaseValue(unsigned char) = 0;
 
   protected:
-    inline static Timer autoSaveTimer_ = Timer(CreateTimer(5000));
-    inline static Timer longPressTimer_ = Timer(CreateTimer(500));
-    inline static Button buttonUp_ = Button(Key::KeyUp);
-    inline static Button buttonDown_ = Button(Key::KeyDown);
+    inline static Timer autoSaveTimer = Timer(CreateTimer(5000));
+    inline static Timer longPressTimer = Timer(CreateTimer(500));
+    inline static Button buttonUp = Button(Key::KeyUp);
+    inline static Button buttonDown = Button(Key::KeyDown);
 
   private:
     void resetView(unsigned long);

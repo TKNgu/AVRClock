@@ -5,6 +5,6 @@
 
 void ClockState::loop() {
     unsigned long now = powerManager.getMillis();
-    timeManager_.updateTime(now);
+    timeManager.updateTime(now);
     loop(now);
 }

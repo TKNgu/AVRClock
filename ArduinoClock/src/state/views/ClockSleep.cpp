@@ -7,7 +7,7 @@
 
 void ClockSleep::reload() {
     unsigned long now = powerManager.getMillis();
-    timeManager_.reload(now);
+    timeManager.reload(now);
     Clear();
     PointOff();
     LedOff(led1);
@@ -17,22 +17,22 @@ void ClockSleep::reload() {
 }
 
 void ClockSleep::loop(unsigned long now) {
-    if (!timeManager_.needSleep()) {
-        manager_->switchToDefaultState();
+    if (!timeManager.needSleep()) {
+        manager->switchToDefaultState();
         return;
     }
 
     if (GetLight() > SLEEP_LIGHT_LEVEL) {
         if (!isNeedClear) {
-            blinkTimer_.reset(now, false);
+            blinkTimer.reset(now, false);
             PointOn();
         }
         isNeedClear = true;
-        if (blinkTimer_.blink(now)) {
+        if (blinkTimer.blink(now)) {
             powerManager.buzzer();
-            blinkTimer_.isBlink
+            blinkTimer.isBlink
                 ? Clear()
-                : ShowTime(timeManager_.hour, timeManager_.minutes);
+                : ShowTime(timeManager.hour, timeManager.minutes);
         }
     } else if (isNeedClear) {
         isNeedClear = false;
@@ -40,8 +40,8 @@ void ClockSleep::loop(unsigned long now) {
         PointOff();
     }
 
-    if (buttonMenu_.scan(now) == Button::LongPress) {
-        manager_->switchToDefaultState();
+    if (buttonMenu.scan(now) == Button::LongPress) {
+        manager->switchToDefaultState();
     }
 
     powerManager.sleep(SleepMode::Idle, SLEEP_1S);

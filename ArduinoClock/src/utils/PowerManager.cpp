@@ -14,7 +14,7 @@ void PowerManager::buzzer() {
 // void PowerManager::buzzerSilent() { noTone(BUZZER_DEVICE); }
 
 void PowerManager::blockDeepSleep(unsigned long durationMs) {
-    // blockDeepSleepUntil_ = getMillis() + durationMs;
+    // blockDeepSleepUntil = getMillis() + durationMs;
 }
 
 unsigned long PowerManager::getPeriodMs(period_t period) {
@@ -45,7 +45,7 @@ unsigned long PowerManager::getPeriodMs(period_t period) {
 }
 
 unsigned long PowerManager::getMillis() {
-    // return millis() + sleepCompensation_;
+    // return millis() + sleepCompensation;
     return millis();
 }
 
@@ -54,12 +54,12 @@ void PowerManager::sleep(SleepMode mode, period_t period, bool needAdc) {
     // delay(period);
     // unsigned long now = getMillis();
     // bool canDeepSleep =
-    //     (mode == SleepMode::Deep) && ((long)(now - blockDeepSleepUntil_) >=
+    //     (mode == SleepMode::Deep) && ((long)(now - blockDeepSleepUntil) >=
     //     0);
     //
     // if (canDeepSleep) {
     //     LowPower.powerDown(period, ADC_OFF, BOD_OFF);
-    //     sleepCompensation_ += getPeriodMs(period);
+    //     sleepCompensation += getPeriodMs(period);
     // } else {
     //     adc_t adcState = needAdc ? ADC_ON : ADC_OFF;
     //     LowPower.idle(period, adcState, TIMER2_ON, TIMER1_OFF, TIMER0_ON,

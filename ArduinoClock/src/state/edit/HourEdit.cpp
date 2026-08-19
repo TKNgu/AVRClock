@@ -1,11 +1,11 @@
 #include "HourEdit.hpp"
 
-void HourEdit::displayBlinkFrame() { ShowMin(timeManager_.minutes); }
+void HourEdit::displayBlinkFrame() { ShowMin(timeManager.minutes); }
 
 void HourEdit::increaseValue(unsigned char step) {
-    timeManager_.increaseHour(step);
+    timeManager.increaseHour(step);
 }
 
 void HourEdit::decreaseValue(unsigned char step) {
-    timeManager_.decreaseHour(step);
+    timeManager.decreaseHour(step);
 }

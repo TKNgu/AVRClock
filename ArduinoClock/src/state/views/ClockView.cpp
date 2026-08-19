@@ -8,39 +8,39 @@
 
 void ClockView::reload() {
     unsigned long now = powerManager.getMillis();
-    timeManager_.reload(now);
-    chimeController_.reload(timeManager_.dayOfWeek, timeManager_.hour,
-                            timeManager_.minutes);
-    ShowTime(timeManager_.hour, timeManager_.minutes);
+    timeManager.reload(now);
+    chimeController.reload(timeManager.dayOfWeek, timeManager.hour,
+                            timeManager.minutes);
+    ShowTime(timeManager.hour, timeManager.minutes);
 }
 
 void ClockView::loop(unsigned long now) {
-    if (timeManager_.isUpdateMinute) {
-        if (timeManager_.needSleep()) {
-            manager_->switchToSleepState();
+    if (timeManager.isUpdateMinute) {
+        if (timeManager.needSleep()) {
+            manager->switchToSleepState();
             return;
         }
-        const bool isChime = chimeController_.shouldChime(
-            timeManager_.dayOfWeek, timeManager_.hour, timeManager_.minutes);
+        const bool isChime = chimeController.shouldChime(
+            timeManager.dayOfWeek, timeManager.hour, timeManager.minutes);
         if (isChime) {
             powerManager.buzzer();
         }
-        ShowTime(timeManager_.hour, timeManager_.minutes);
+        ShowTime(timeManager.hour, timeManager.minutes);
     }
 
-    if (timeManager_.isSecondsUpdate) {
-        lightController_.updateLoop(now);
-        if (timeManager_.isUpdateDay) {
-            lightController_.commitDailyMaxLight();
+    if (timeManager.isSecondsUpdate) {
+        lightController.updateLoop(now);
+        if (timeManager.isUpdateDay) {
+            lightController.commitDailyMaxLight();
         }
     }
 
-    if (blinkTimer_.blink(now)) {
-        blinkTimer_.isBlink ? PointOn() : PointOff();
+    if (blinkTimer.blink(now)) {
+        blinkTimer.isBlink ? PointOn() : PointOff();
     }
 
-    if (buttonMenu_.scan(now) == Button::Click) {
-        manager_->switchToNextState();
+    if (buttonMenu.scan(now) == Button::Click) {
+        manager->switchToNextState();
         return;
     }
 

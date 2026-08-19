@@ -248,7 +248,7 @@ void TTSDisplay::stop(void) {
  * Return: None
  *********************************************************************************************************/
 void TTSDisplay::set(uchar brightness, uchar SetData, uchar SetAddr) {
-    _brightness = brightness;
+    brightness = brightness;
     Cmd_SetData = SetData;
     Cmd_SetAddr = SetAddr;
     Cmd_Dispdisplay = 0x88 + brightness;
@@ -261,7 +261,7 @@ void TTSDisplay::set(uchar brightness, uchar SetData, uchar SetAddr) {
  * Return: None
  *********************************************************************************************************/
 void TTSDisplay::pointOn() {
-    _PointFlag = 1;
+    PointFlag = 1;
 
     for (int i = 0; i < 4; i++) {
         display(i, dtaDisplay[i]);
@@ -275,7 +275,7 @@ void TTSDisplay::pointOn() {
  * Return: None
  *********************************************************************************************************/
 void TTSDisplay::pointOff() {
-    _PointFlag = 0;
+    PointFlag = 0;
 
     for (int i = 0; i < 4; i++) {
         display(i, dtaDisplay[i]);
@@ -289,7 +289,7 @@ void TTSDisplay::pointOff() {
  * Return: None
  *********************************************************************************************************/
 uchar TTSDisplay::coding(uchar DispData) {
-    uchar PointData = _PointFlag ? 0x80 : 0x00;
+    uchar PointData = PointFlag ? 0x80 : 0x00;
     DispData = (0x7f == DispData) ? PointData : (TubeTab[DispData] + PointData);
     return DispData;
 }

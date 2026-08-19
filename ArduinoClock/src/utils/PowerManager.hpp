@@ -19,8 +19,8 @@ class PowerManager {
     unsigned long getMillis();
 
   private:
-    unsigned long blockDeepSleepUntil_ = 0;
-    unsigned long sleepCompensation_ = 0;
+    unsigned long blockDeepSleepUntil = 0;
+    unsigned long sleepCompensation = 0;
     unsigned long getPeriodMs(period_t period);
 };
 

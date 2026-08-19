@@ -56,8 +56,8 @@ class TTSDisplay {
     uchar Cmd_SetData;
     uchar Cmd_SetAddr;
     uchar Cmd_Dispdisplay;
-    uchar _PointFlag;  //_PointFlag=1:the clock point on
-    uchar _brightness;
+    uchar PointFlag;  //PointFlag=1:the clock point on
+    uchar brightness;
     uchar Clkpin;
     uchar Datapin;
     uchar dtaDisplay[4];
