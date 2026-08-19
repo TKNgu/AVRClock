@@ -73,6 +73,7 @@ unsigned char GetDayOfWeek() {
     static unsigned char tmp;
     static unsigned char dayOfWeek;
     time.getTime(&tmp, &tmp, &tmp, &dayOfWeek, &tmp, &tmp, &tmp);
+    return dayOfWeek;
 }
 
 unsigned char GetHour() { return time.getHour(); }
@@ -111,7 +112,7 @@ void SetDateTime(const unsigned char hour, const unsigned char min,
 }
 
 void GetDayOfWeek(unsigned char* dayOfWeek) {
-    static char tmp;
+    static unsigned char tmp;
     time.getTime(&tmp, &tmp, &tmp, dayOfWeek, &tmp, &tmp, &tmp);
 }
 

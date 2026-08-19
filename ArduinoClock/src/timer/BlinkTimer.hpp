@@ -9,7 +9,7 @@ struct BlinkTimer {
 
     BlinkTimer(unsigned long);
     bool blink(unsigned long);
-    void reset(unsigned long, bool = false);
+    void reset(unsigned long, bool = true);
 };
 
 #endif // BLINKTIMER_HPP

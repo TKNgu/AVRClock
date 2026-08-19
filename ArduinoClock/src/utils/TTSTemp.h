@@ -58,6 +58,7 @@ public:
         }
         
         a >>= 5;
+        if (a == 0) return -999;
         
         float resistance=(float)(1023-a)*10000/a; //get the resistance of the sensor;
         float temperature=1/(log(resistance/10000)/3975+1/298.15)-273.15;//convert to temperature via datasheet ;

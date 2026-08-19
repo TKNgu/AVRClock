@@ -183,7 +183,8 @@ void TTSDisplay::clear() {
  * Return: None
  *********************************************************************************************************/
 void TTSDisplay::writeByte(uchar wr_data) {
-    uchar i, count1;
+    uchar i;
+    uchar count1 = 0;
     for (i = 0; i < 8; i++)  // sent 8bit data
     {
         digitalWrite(Clkpin, LOW);

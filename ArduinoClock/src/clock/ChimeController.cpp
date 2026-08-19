@@ -1,7 +1,9 @@
 #include "ChimeController.hpp"
 
-#include "../utils/Utils.hpp"
 #include "../utils/PowerManager.hpp"
+#include "../utils/Utils.hpp"
+
+const unsigned MINUTES_IN_WEEK = 7 * 24 * 60;
 
 ChimeController::ChimeController() {
     unsigned char offset = 0;
@@ -13,8 +15,9 @@ ChimeController::ChimeController() {
     }
 }
 
-void ChimeController::reload() {
-    TimePoint timePoint = GetTimePoint();
+void ChimeController::reload(unsigned char dayOfWeek, unsigned char hour,
+                             unsigned char min) {
+    TimePoint timePoint = TimePointInit(dayOfWeek, hour, min);
     for (indexTimePoint = 0; indexTimePoint < HOURLY_CHIME_SIZE;
          indexTimePoint++) {
         TimePoint tmp = timePoints[indexTimePoint];
@@ -22,7 +25,6 @@ void ChimeController::reload() {
             continue;
         }
         if (tmp == timePoint) {
-            powerManager.buzzer();
             indexTimePoint++;
             break;
         }
@@ -34,10 +36,15 @@ void ChimeController::reload() {
         indexTimePoint = 0;
     }
     TimePoint nextTimePoint = timePoints[indexTimePoint];
-    minutesCount = nextTimePoint - timePoint;
+    if (nextTimePoint < timePoint) {
+        minutesCount = MINUTES_IN_WEEK + nextTimePoint - timePoint;
+    } else {
+        minutesCount = nextTimePoint - timePoint;
+    }
 }
 
-bool ChimeController::shouldChime() {
+bool ChimeController::shouldChime(unsigned char dayOfWeek, unsigned char hour,
+                                  unsigned char min) {
     if (minutesCount-- > 1) {
         return false;
     }
@@ -48,6 +55,10 @@ bool ChimeController::shouldChime() {
         indexTimePoint = 0;
     }
     TimePoint nextTimePoint = timePoints[indexTimePoint];
-    minutesCount = nextTimePoint - timePoint;
+    if (nextTimePoint < timePoint) {
+        minutesCount = MINUTES_IN_WEEK + nextTimePoint - timePoint;
+    } else {
+        minutesCount = nextTimePoint - timePoint;
+    }
     return true;
 }

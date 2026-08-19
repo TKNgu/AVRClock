@@ -60,9 +60,9 @@ uchar TTSTime::bcdToDec(uchar val) { return ((val / 16 * 10) + (val % 16)); }
  * Return: None
  *********************************************************************************************************/
 void TTSTime::setTime(uchar hour, uchar min, uchar sec) {
-    if (hour > 24 || hour < 0) return;
-    if (min > 59 || min < 0) return;
-    if (sec > 59 || min < 0) return;
+    if (hour > 23 || min > 59 || sec > 59) {
+        return;
+    }
 
     unsigned char tmp;
     unsigned char dayOfWeek;
@@ -70,10 +70,10 @@ void TTSTime::setTime(uchar hour, uchar min, uchar sec) {
 
     Wire.beginTransmission(I2CADDR);
     Wire.write((uchar)0x00);
-    Wire.write(decToBcd(sec));  // 0 to bit 7 starts the clock
+    Wire.write(decToBcd(sec)); // 0 to bit 7 starts the clock
     Wire.write(decToBcd(min));
-    Wire.write(decToBcd(hour));  // If you want 12 hour am/pm you need to set
-                                 // bit 6 (also need to change readDateDs1307)
+    Wire.write(decToBcd(hour)); // If you want 12 hour am/pm you need to set
+                                // bit 6 (also need to change readDateDs1307)
     Wire.write(decToBcd(dayOfWeek));
     Wire.write(decToBcd(DAY));
     Wire.write(decToBcd(MONTH));
@@ -81,17 +81,22 @@ void TTSTime::setTime(uchar hour, uchar min, uchar sec) {
     Wire.endTransmission();
 }
 
-void TTSTime::setTime(uchar hour, uchar min, uchar sec, uchar dayOfWeek, uchar dayOfMonth, uchar month, uchar year) {
-    if (hour > 24 || hour < 0) return;
-    if (min > 59 || min < 0) return;
-    if (sec > 59 || min < 0) return;
+void TTSTime::setTime(uchar hour, uchar min, uchar sec, uchar dayOfWeek,
+                      uchar dayOfMonth, uchar month, uchar year) {
+    if (hour > 23 || min > 59 || sec > 59) {
+        return;
+    }
+    if (dayOfWeek < 1 || dayOfWeek > 7 || dayOfMonth > 31 || month > 12 ||
+        year > 99) {
+        return;
+    }
 
     Wire.beginTransmission(I2CADDR);
     Wire.write((uchar)0x00);
-    Wire.write(decToBcd(sec));  // 0 to bit 7 starts the clock
+    Wire.write(decToBcd(sec)); // 0 to bit 7 starts the clock
     Wire.write(decToBcd(min));
-    Wire.write(decToBcd(hour));  // If you want 12 hour am/pm you need to set
-                                 // bit 6 (also need to change readDateDs1307)
+    Wire.write(decToBcd(hour)); // If you want 12 hour am/pm you need to set
+                                // bit 6 (also need to change readDateDs1307)
     Wire.write(decToBcd(dayOfWeek));
     Wire.write(decToBcd(dayOfMonth));
     Wire.write(decToBcd(month));
@@ -105,7 +110,7 @@ void TTSTime::setTime(uchar hour, uchar min, uchar sec, uchar dayOfWeek, uchar d
  * Parameters: *hour - hour, *min - minutes, *sec - second
  * Return: None
  *********************************************************************************************************/
-void TTSTime::getTime(uchar *hour, uchar *min, uchar *sec) {
+void TTSTime::getTime(uchar* hour, uchar* min, uchar* sec) {
     Wire.beginTransmission(I2CADDR);
     Wire.write((uchar)0x00);
     Wire.endTransmission();
@@ -115,15 +120,16 @@ void TTSTime::getTime(uchar *hour, uchar *min, uchar *sec) {
 
     *sec = bcdToDec(Wire.read() & 0x7f);
     *min = bcdToDec(Wire.read());
-    *hour = bcdToDec(Wire.read() & 0x3f);  // Need to change this if 12 hour am/pm
+    *hour =
+        bcdToDec(Wire.read() & 0x3f); // Need to change this if 12 hour am/pm
     tmp = bcdToDec(Wire.read());
     tmp = bcdToDec(Wire.read());
     tmp = bcdToDec(Wire.read());
     tmp = bcdToDec(Wire.read());
 }
 
-void TTSTime::getTime(uchar *hour, uchar *min, uchar *sec, uchar *dayOfWeek, uchar *dayOfMonth, uchar *month,
-                      uchar *year) {
+void TTSTime::getTime(uchar* hour, uchar* min, uchar* sec, uchar* dayOfWeek,
+                      uchar* dayOfMonth, uchar* month, uchar* year) {
     Wire.beginTransmission(I2CADDR);
     Wire.write((uchar)0x00);
     Wire.endTransmission();
@@ -133,7 +139,8 @@ void TTSTime::getTime(uchar *hour, uchar *min, uchar *sec, uchar *dayOfWeek, uch
 
     *sec = bcdToDec(Wire.read() & 0x7f);
     *min = bcdToDec(Wire.read());
-    *hour = bcdToDec(Wire.read() & 0x3f);  // Need to change this if 12 hour am/pm
+    *hour =
+        bcdToDec(Wire.read() & 0x3f); // Need to change this if 12 hour am/pm
     *dayOfWeek = bcdToDec(Wire.read());
     *dayOfMonth = bcdToDec(Wire.read());
     *month = bcdToDec(Wire.read());

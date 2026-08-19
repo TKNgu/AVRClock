@@ -6,9 +6,9 @@
 
 void ClockEdit::reload() {
     unsigned long now = powerManager.getMillis();
-    blinkTimer_.reset(now, true);
     ResetTimer(&autoSaveTimer_, now);
     ShowTime(timeManager_.hour, timeManager_.minutes);
+    blinkTimer_.reset(now);
 }
 
 void ClockEdit::loop(unsigned long now) {
@@ -62,7 +62,7 @@ void ClockEdit::loop(unsigned long now) {
     }
 
     if (blinkTimer_.blink(now)) {
-        if ((blinkTimer_.isBlink = !blinkTimer_.isBlink)) {
+        if (blinkTimer_.isBlink) {
             ShowTime(timeManager_.hour, timeManager_.minutes);
             PointOn();
         } else {
@@ -75,7 +75,7 @@ void ClockEdit::loop(unsigned long now) {
 }
 
 void ClockEdit::resetView(unsigned long now) {
-    blinkTimer_.reset(now);
+    blinkTimer_.reset(now, false);
     ResetTimer(&autoSaveTimer_, now);
     ShowTime(timeManager_.hour, timeManager_.minutes);
 }

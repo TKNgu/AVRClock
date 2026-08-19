@@ -16,10 +16,11 @@ Timer CreateTimer(unsigned long leng) {
 }
 
 bool TimerTimeoutFix(Timer* timer, unsigned long timeNow) {
-    if (timer->nextTime > timeNow) {
+    if ((long)(timeNow - timer->nextTime) < 0) {
         return false;
     }
-    timer->nextTime = timeNow + timer->leng;
+    const unsigned long delta = timeNow - timer->nextTime;
+    timer->nextTime = timeNow + timer->leng - delta % timer->leng;
     return true;
 }
 

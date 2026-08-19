@@ -11,8 +11,8 @@ struct ChimeController {
     unsigned long minutesCount;
 
     ChimeController();
-    void reload();
-    bool shouldChime();
+    void reload(unsigned char, unsigned char, unsigned char);
+    bool shouldChime(unsigned char, unsigned char, unsigned char);
 };
 
 #endif // CHIMECONTROLLER_HPP

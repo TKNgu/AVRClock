@@ -18,8 +18,10 @@ float KamaFilter::update(int newValue) {
 
     float change = abs(newValue - past);
     float volatility = 0;
-    for (uint8_t i = 1; i < _period; i++) {
-        volatility += abs(_buffer[i] - _buffer[i - 1]);
+    for (uint8_t i = 0; i < _period - 1; i++) {
+        uint8_t curr = (_index + i) % _period;
+        uint8_t next = (_index + i + 1) % _period;
+        volatility += abs(_buffer[next] - _buffer[curr]);
     }
 
     float ER = (volatility != 0) ? change / volatility : 0.0;

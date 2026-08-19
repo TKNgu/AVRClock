@@ -7,8 +7,10 @@
 #include "../StateManager.hpp"
 
 void ClockView::reload() {
-    timeManager_.reload();
-    chimeController_.reload();
+    unsigned long now = powerManager.getMillis();
+    timeManager_.reload(now);
+    chimeController_.reload(timeManager_.dayOfWeek, timeManager_.hour,
+                            timeManager_.minutes);
     ShowTime(timeManager_.hour, timeManager_.minutes);
 }
 
@@ -18,19 +20,23 @@ void ClockView::loop(unsigned long now) {
             manager_->switchToSleepState();
             return;
         }
-        if (chimeController_.shouldChime()) {
+        const bool isChime = chimeController_.shouldChime(
+            timeManager_.dayOfWeek, timeManager_.hour, timeManager_.minutes);
+        if (isChime) {
             powerManager.buzzer();
         }
         ShowTime(timeManager_.hour, timeManager_.minutes);
     }
 
-    lightController_.updateLoop(now);
-    if (timeManager_.isUpdateDay) {
-        lightController_.commitDailyMaxLight();
+    if (timeManager_.isSecondsUpdate) {
+        lightController_.updateLoop(now);
+        if (timeManager_.isUpdateDay) {
+            lightController_.commitDailyMaxLight();
+        }
     }
 
     if (blinkTimer_.blink(now)) {
-        (blinkTimer_.isBlink = !blinkTimer_.isBlink) ? PointOn() : PointOff();
+        blinkTimer_.isBlink ? PointOn() : PointOff();
     }
 
     if (buttonMenu_.scan(now) == Button::Click) {

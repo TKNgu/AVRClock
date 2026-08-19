@@ -7,26 +7,29 @@
 
 struct TimeManager {
     Timer syncTimer;
-    Timer waitSleepTimer = CreateTimer(WAIT_SLEEP_TIME);
 
-    unsigned long timeOffset;
-    unsigned char hour;
-    unsigned char minutes;
+    unsigned long timeNow;
+    unsigned int milliseconds;
     unsigned char seconds;
+    unsigned char minutes;
+    unsigned char hour;
+    unsigned char dayOfWeek;
 
+    bool isSecondsUpdate = false;
     bool isUpdateMinute = false;
     bool isUpdateDay = false;
 
     TimeManager();
     virtual ~TimeManager() = default;
 
-    void reload();
-    void setTime();
+    void reload(unsigned long);
     void updateTime(unsigned long);
     void increaseMinute(unsigned char);
     void decreaseMinute(unsigned char);
     void increaseHour(unsigned char);
     void decreaseHour(unsigned char);
+    void setTime();
+    void setDayOfWeek(unsigned char);
 };
 
 class TimeManagerAdvance : public TimeManager {
@@ -34,8 +37,6 @@ class TimeManagerAdvance : public TimeManager {
     TimeManagerAdvance();
 
     bool needSleep();
-    bool isNearWakeUp(unsigned int minutesBefore);
-    void waitSleep(unsigned long duration);
 
   private:
     unsigned int dynamicSleepTime;

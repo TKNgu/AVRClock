@@ -16,7 +16,7 @@ Button::State Button::scan(unsigned long now) {
             return Idle;
         }
         case Click: {
-            if (time + LONG_PRESS > now) {
+            if (now - time < LONG_PRESS) {
                 return Idle;
             }
             state = LongPress;
@@ -33,9 +33,9 @@ Button::State Button::scan(unsigned long now) {
     case Idle:
         return Idle;
     case Click: {
-        if (time + SHORT_PRESS > now) {
+        if (now - time < SHORT_PRESS) {
             return Idle;
-        } else if (time + LONG_PRESS > now) {
+        } else if (now - time < LONG_PRESS) {
             return Click;
         } else {
             return LongPress;

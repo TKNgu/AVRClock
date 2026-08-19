@@ -2,16 +2,17 @@
 
 #include <Arduino.h>
 
-#include "../utils/PowerManager.hpp"
 #include "../utils/Utils.hpp"
 
 #define UPDATE_TIME_TASK 3600000
 
 TimeManager::TimeManager() : syncTimer(CreateTimer(UPDATE_TIME_TASK)) {}
 
-void TimeManager::reload() {
-    GetTime(&hour, &minutes, &seconds);
-    timeOffset = powerManager.getMillis() - (unsigned long)seconds * 1000;
+void TimeManager::reload(unsigned long now) {
+    timeNow = now;
+    milliseconds = 0;
+    unsigned char tmp;
+    GetDateTime(&hour, &minutes, &seconds, &dayOfWeek, &tmp, &tmp, &tmp);
 }
 
 void TimeManager::setTime() { SetTime(hour, minutes); }
@@ -19,21 +20,25 @@ void TimeManager::setTime() { SetTime(hour, minutes); }
 void TimeManager::updateTime(unsigned long now) {
     isUpdateMinute = false;
     isUpdateDay = false;
-    if (TimerTimeoutFix(&this->syncTimer, now)) {
-        GetTime(&hour, &minutes, &seconds);
-        timeOffset = now - (unsigned long)seconds * 1000;
+
+    unsigned int delta = now - timeNow;
+    timeNow = now;
+    milliseconds += delta;
+    const unsigned char tmp = milliseconds / 1000;
+    if (tmp < 1) {
         return;
     }
 
-    seconds = (now - timeOffset) / 1000;
+    isSecondsUpdate = true;
+    seconds += tmp;
+    milliseconds %= 1000;
     if (seconds < 60) {
         return;
     }
-    timeOffset = now;
     seconds -= 60;
 
-    minutes++;
     isUpdateMinute = true;
+    minutes++;
     if (minutes < 60) {
         return;
     }
@@ -44,7 +49,12 @@ void TimeManager::updateTime(unsigned long now) {
         return;
     }
     hour -= 24;
+
     isUpdateDay = true;
+    dayOfWeek++;
+    if (dayOfWeek > 7) {
+        dayOfWeek = 1;
+    }
 }
 
 void TimeManager::increaseMinute(unsigned char value) {
@@ -67,6 +77,11 @@ void TimeManager::increaseHour(unsigned char value) {
 
 void TimeManager::decreaseHour(unsigned char value) {
     hour = hour >= value ? hour - value : hour + 24 - value;
+}
+
+void TimeManager::setDayOfWeek(unsigned char value) {
+    dayOfWeek = value;
+    SetDayOfWeek(dayOfWeek);
 }
 
 #define SLEEP_HOUR 23
@@ -96,20 +111,4 @@ bool TimeManagerAdvance::needSleep() {
     }
 
     return inInterval(tmp, dynamicSleepTime, wakeUpTime);
-}
-
-bool TimeManagerAdvance::isNearWakeUp(unsigned int minutesBefore) {
-    unsigned int tmp = hour * 60 + minutes;
-
-    int diff = wakeUpTime - tmp;
-    if (diff < 0) {
-        diff += 24 * 60;
-    }
-
-    return diff > 0 && diff <= (int)minutesBefore;
-}
-
-void TimeManagerAdvance::waitSleep(unsigned long duration) {
-    unsigned int totalMinutes = hour * 60 + minutes + duration;
-    dynamicSleepTime = totalMinutes % (24 * 60);
 }

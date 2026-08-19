@@ -6,11 +6,15 @@
 #include "../utils/Utils.hpp"
 
 #define LIGHT_LEVEL_WARNING 30
+#define MAX_LIGHT_LEVEL 1000
 
 MovingMaxFilter::MovingMaxFilter() {
     for (unsigned index = 0; index < SIZE_ITEM; index++) {
         const unsigned offset = index * sizeof(unsigned);
         EEPROM.get(offset, valueMax[index]);
+        if (valueMax[index] > MAX_LIGHT_LEVEL) {
+            valueMax[index] = 0;
+        }
     }
     EEPROM.get(SIZE_ITEM * sizeof(unsigned), valueMaxIndex);
 }

@@ -7,49 +7,51 @@ PowerManager powerManager;
 
 void PowerManager::buzzer() {
     tone(BUZZER_DEVICE, 2400, 60);
-    blockDeepSleep(2000); // 2s delay
+    // delay(2000); // 2s delay
+    // blockDeepSleep(2000); // 2s delay
 }
 
 // void PowerManager::buzzerSilent() { noTone(BUZZER_DEVICE); }
 
 void PowerManager::blockDeepSleep(unsigned long durationMs) {
-    blockDeepSleepUntil_ = getMillis() + durationMs;
+    // blockDeepSleepUntil_ = getMillis() + durationMs;
 }
 
 unsigned long PowerManager::getPeriodMs(period_t period) {
-    switch (period) {
-    case SLEEP_15MS:
-        return 15;
-    case SLEEP_30MS:
-        return 30;
-    case SLEEP_60MS:
-        return 60;
-    case SLEEP_120MS:
-        return 120;
-    case SLEEP_250MS:
-        return 250;
-    case SLEEP_500MS:
-        return 500;
-    case SLEEP_1S:
-        return 1000;
-    case SLEEP_2S:
-        return 2000;
-    case SLEEP_4S:
-        return 4000;
-    case SLEEP_8S:
-        return 8000;
-    default:
-        return 0;
-    }
+    // switch (period) {
+    // case SLEEP_15MS:
+    //     return 15;
+    // case SLEEP_30MS:
+    //     return 30;
+    // case SLEEP_60MS:
+    //     return 60;
+    // case SLEEP_120MS:
+    //     return 120;
+    // case SLEEP_250MS:
+    //     return 250;
+    // case SLEEP_500MS:
+    //     return 500;
+    // case SLEEP_1S:
+    //     return 1000;
+    // case SLEEP_2S:
+    //     return 2000;
+    // case SLEEP_4S:
+    //     return 4000;
+    // case SLEEP_8S:
+    //     return 8000;
+    // default:
+    //     return 0;
+    // }
 }
 
 unsigned long PowerManager::getMillis() {
-    return millis() + sleepCompensation_;
+    // return millis() + sleepCompensation_;
     return millis();
 }
 
 void PowerManager::sleep(SleepMode mode, period_t period, bool needAdc) {
-    delay(period);
+    delay(100);
+    // delay(period);
     // unsigned long now = getMillis();
     // bool canDeepSleep =
     //     (mode == SleepMode::Deep) && ((long)(now - blockDeepSleepUntil_) >=
