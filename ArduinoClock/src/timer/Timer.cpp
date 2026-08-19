@@ -6,7 +6,7 @@ void ResetTimer(Timer* timer, unsigned long now) {
     timer->nextTime = now + timer->leng;
 }
 
-void ResetTimer(Timer* timer) { ResetTimer(timer, powerManager.getMillis()); }
+void ResetTimer(Timer* timer) { ResetTimer(timer, millis()); }
 
 Timer CreateTimer(unsigned long leng) {
     return Timer{
@@ -24,6 +24,4 @@ bool TimerTimeoutFix(Timer* timer, unsigned long timeNow) {
     return true;
 }
 
-bool TimerTimeout(Timer* timer) {
-    return TimerTimeoutFix(timer, powerManager.getMillis());
-}
+bool TimerTimeout(Timer* timer) { return TimerTimeoutFix(timer, millis()); }

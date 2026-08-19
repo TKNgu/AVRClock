@@ -5,7 +5,7 @@
 #include "../StateManager.hpp"
 
 void ClockEdit::reload() {
-    unsigned long now = powerManager.getMillis();
+    unsigned long now = millis();
     ResetTimer(&autoSaveTimer, now);
     ShowTime(timeManager.hour, timeManager.minutes);
     blinkTimer.reset(now);

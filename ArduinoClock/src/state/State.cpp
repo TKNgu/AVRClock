@@ -4,7 +4,7 @@
 #include <Arduino.h>
 
 void ClockState::loop() {
-    unsigned long now = powerManager.getMillis();
+    unsigned long now = millis();
     timeManager.updateTime(now);
     loop(now);
 }

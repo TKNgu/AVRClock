@@ -7,7 +7,7 @@
 #include "../StateManager.hpp"
 
 void ClockView::reload() {
-    unsigned long now = powerManager.getMillis();
+    unsigned long now = millis();
     timeManager.reload(now);
     chimeController.reload(timeManager.dayOfWeek, timeManager.hour,
                            timeManager.minutes);
@@ -44,5 +44,5 @@ void ClockView::loop(unsigned long now) {
         return;
     }
 
-    powerManager.sleep(PowerManager::SleepTime::SLEEP_120MS);
+    powerManager.sleep(120);
 }
