@@ -25,9 +25,10 @@ float KamaFilter::update(int newValue) {
     }
 
     float ER = (volatility != 0) ? change / volatility : 0.0;
-    float fastSC = 2.0 / (fastSC + 1);
-    float slowSC = 2.0 / (slowSC + 1);
-    float SC = pow((ER * (fastSC - slowSC) + slowSC), 2);
+    float fastConstant = 2.0f / (float)(this->fastSC + 1);
+    float slowConstant = 2.0f / (float)(this->slowSC + 1);
+    float SC_raw = ER * (fastConstant - slowConstant) + slowConstant;
+    float SC = SC_raw * SC_raw;
 
     kama = kama + SC * (newValue - kama);
     return kama;

@@ -17,10 +17,10 @@ void PowerManager::sleep(unsigned long sleepTime) {
     const unsigned long start = millis();
     while (millis() - start < sleepTime) {
         if (millis() - buzzerTime < 1000) {
-            LowPower.idle(SLEEP_FOREVER, ADC_OFF, TIMER2_ON, TIMER1_OFF,
+            LowPower.idle(SLEEP_FOREVER, ADC_ON, TIMER2_ON, TIMER1_OFF,
                           TIMER0_ON, SPI_OFF, USART0_OFF, TWI_OFF);
         } else {
-            LowPower.idle(SLEEP_FOREVER, ADC_OFF, TIMER2_OFF, TIMER1_OFF,
+            LowPower.idle(SLEEP_FOREVER, ADC_ON, TIMER2_OFF, TIMER1_OFF,
                           TIMER0_ON, SPI_OFF, USART0_OFF, TWI_OFF);
         }
     }

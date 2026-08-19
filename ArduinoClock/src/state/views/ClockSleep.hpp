@@ -10,7 +10,7 @@ class ClockSleep : public ClockState {
 
   private:
     BlinkTimer blinkTimer = BlinkTimer(1000);
-    bool isNeedClear = true;
+    bool isNeedWarning = false;
 };
 
 #endif // CLOCKSLEEP_HPP
