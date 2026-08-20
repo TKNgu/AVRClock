@@ -117,8 +117,6 @@ bool TimeManagerAdvance::needSleep() {
 
 bool TimeManagerAdvance::needDeepSleep() {
     const unsigned int tmp = hour * 60 + minutes;
-    if (tmp > sleepTime) {
-        return (23 * 60 + 59 - tmp + wakeUpTime) > DEEP_SLEEP_WAIT_TIME;
-    }
-    return (wakeUpTime - tmp) > DEEP_SLEEP_WAIT_TIME;
+    const unsigned int remainingTime = (wakeUpTime + 24 * 60 - tmp) % (24 * 60);
+    return remainingTime > DEEP_SLEEP_WAIT_TIME;
 }
