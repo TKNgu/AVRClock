@@ -6,7 +6,7 @@
 #include "../StateManager.hpp"
 
 #define DEEP_SLEEP_TIME 3600
-#define SLEEP_LIGHT_LEVEL 200
+#define SLEEP_LIGHT_LEVEL 20
 
 void ClockDeepSleep::reload() {
     if (timeManager.needDeepSleep()) {
