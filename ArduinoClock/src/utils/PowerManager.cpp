@@ -25,3 +25,7 @@ void PowerManager::sleep(unsigned long sleepTime) {
         }
     }
 }
+
+void PowerManager::powerOff(unsigned long sleepTime) {
+    LowPower.powerDown(SLEEP_1S, ADC_OFF, BOD_OFF);
+}

@@ -4,6 +4,7 @@
 
 #include "../utils/Utils.hpp"
 
+#define WAIT_SLEEP_TIME 300000
 #define UPDATE_TIME_TASK 3600000
 
 TimeManager::TimeManager() : syncTimer(CreateTimer(UPDATE_TIME_TASK)) {}
@@ -88,6 +89,7 @@ void TimeManager::setDayOfWeek(unsigned char value) {
 #define SLEEP_MINUTE 45
 #define WAKE_HOUR 5
 #define WAKE_MINUTE 00
+#define DEEP_SLEEP_WAIT_TIME 30
 
 static const unsigned int wakeUpTime = WAKE_HOUR * 60 + WAKE_MINUTE;
 static const unsigned int sleepTime = SLEEP_HOUR * 60 + SLEEP_MINUTE;
@@ -111,4 +113,12 @@ bool TimeManagerAdvance::needSleep() {
     }
 
     return inInterval(tmp, dynamicSleepTime, wakeUpTime);
+}
+
+bool TimeManagerAdvance::needDeepSleep() {
+    const unsigned int tmp = hour * 60 + minutes;
+    if (tmp > sleepTime) {
+        return (23 * 60 + 59 - tmp + wakeUpTime) > DEEP_SLEEP_WAIT_TIME;
+    }
+    return (wakeUpTime - tmp) > DEEP_SLEEP_WAIT_TIME;
 }

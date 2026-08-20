@@ -16,6 +16,7 @@ struct Button {
 
     Button(Key key);
     State scan(unsigned long now);
+    bool isPress();
 };
 
 #endif // BUTTON2_HPP

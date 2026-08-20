@@ -4,6 +4,7 @@
 #include "State.hpp"
 #include "edit/HourEdit.hpp"
 #include "edit/MinutesEdit.hpp"
+#include "views/ClockDeepSleep.hpp"
 #include "views/ClockSleep.hpp"
 #include "views/ClockView.hpp"
 
@@ -16,6 +17,7 @@ class StateManager {
     void switchToNextState();
     void switchToDefaultState();
     void switchToSleepState();
+    void switchToDeepSleepState();
 
   private:
     enum StateId {
@@ -27,6 +29,7 @@ class StateManager {
     };
 
     ClockSleep sleepState;
+    ClockDeepSleep deepSleepState;
     ClockView clockViewState;
     HourEdit hourEditState;
     MinutesEdit minutesEditState;

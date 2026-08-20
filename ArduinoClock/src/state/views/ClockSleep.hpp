@@ -11,6 +11,7 @@ class ClockSleep : public ClockState {
   private:
     BlinkTimer blinkTimer = BlinkTimer(1000);
     bool isNeedWarning = false;
+    bool isNeedDeepSleep = false;
 };
 
 #endif // CLOCKSLEEP_HPP

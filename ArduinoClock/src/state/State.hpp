@@ -21,6 +21,7 @@ class State {
   protected:
     inline static StateManager* manager = nullptr;
     inline static Button buttonMenu = Button(Key::KeyMenu);
+    inline static TimeManagerAdvance timeManager = TimeManagerAdvance();
 };
 
 class ClockState : public State {
@@ -30,7 +31,6 @@ class ClockState : public State {
 
   protected:
     inline static BlinkTimer blinkTimer = BlinkTimer(500);
-    inline static TimeManagerAdvance timeManager = TimeManagerAdvance();
 };
 
 #endif // STATE2_HPP

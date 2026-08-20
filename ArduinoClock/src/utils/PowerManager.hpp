@@ -7,6 +7,7 @@ class PowerManager {
   public:
     void buzzer();
     void sleep(unsigned long);
+    void powerOff(unsigned long);
 
   private:
     unsigned long buzzerTime;

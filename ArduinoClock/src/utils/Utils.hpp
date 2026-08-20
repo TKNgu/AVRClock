@@ -69,4 +69,6 @@ void ShowNum(int num);
 
 int GetTem();
 
+void LightOff();
+
 #endif

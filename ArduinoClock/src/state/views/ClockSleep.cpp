@@ -6,14 +6,10 @@
 #define SLEEP_LIGHT_LEVEL 20
 
 void ClockSleep::reload() {
-    unsigned long now = millis();
-    timeManager.reload(now);
-    Clear();
-    PointOff();
-    LedOff(led1);
-    LedOff(led2);
-    LedOff(led3);
-    LedOff(led4);
+    LightOff();
+    isNeedWarning = false;
+    timeManager.reload(millis());
+    isNeedDeepSleep = timeManager.needDeepSleep();
 }
 
 void ClockSleep::loop(unsigned long now) {
@@ -35,15 +31,20 @@ void ClockSleep::loop(unsigned long now) {
             Clear();
             PointOff();
         }
-    } else if (timeManager.isSecondsUpdate && GetLight() > SLEEP_LIGHT_LEVEL) {
-        isNeedWarning = true;
-        blinkTimer.reset(now);
-        PointOn();
+    } else {
+        if (GetLight() > SLEEP_LIGHT_LEVEL) {
+            isNeedWarning = true;
+            blinkTimer.reset(now);
+            PointOn();
+        } else if (isNeedDeepSleep) {
+            manager->switchToDeepSleepState();
+            return;
+        }
     }
 
     if (buttonMenu.scan(now) == Button::LongPress) {
         manager->switchToDefaultState();
     }
 
-    powerManager.sleep(250);
+    powerManager.sleep(500);
 }

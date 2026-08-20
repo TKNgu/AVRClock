@@ -3,8 +3,6 @@
 
 #include "../timer/Timer.hpp"
 
-#define WAIT_SLEEP_TIME 300000
-
 struct TimeManager {
     Timer syncTimer;
 
@@ -37,6 +35,7 @@ class TimeManagerAdvance : public TimeManager {
     TimeManagerAdvance();
 
     bool needSleep();
+    bool needDeepSleep();
 
   private:
     unsigned int dynamicSleepTime;

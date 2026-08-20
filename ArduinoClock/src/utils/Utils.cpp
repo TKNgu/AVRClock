@@ -208,3 +208,12 @@ void AutoLight(int light) {
         SetLightLevel(lightLevel);
     }
 }
+
+void LightOff() {
+    Clear();
+    PointOff();
+    LedOff(led1);
+    LedOff(led2);
+    LedOff(led3);
+    LedOff(led4);
+}

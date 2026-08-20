@@ -46,3 +46,5 @@ Button::State Button::scan(unsigned long now) {
     }
     };
 }
+
+bool Button::isPress() { return ReadKey(key); }

@@ -34,6 +34,11 @@ void StateManager::switchToSleepState() {
     currentState->reload();
 }
 
+void StateManager::switchToDeepSleepState() {
+    currentState = &deepSleepState;
+    currentState->reload();
+}
+
 void StateManager::applyStateTransition() {
     currentState = states[currentStateId];
     currentState->reload();
