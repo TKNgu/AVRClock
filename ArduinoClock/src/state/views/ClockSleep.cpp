@@ -9,7 +9,7 @@ void ClockSleep::reload() {
     LightOff();
     isNeedWarning = false;
     timeManager.reload(millis());
-    isNeedDeepSleep = timeManager.needDeepSleep();
+    isNeedDeepSleep = timeManager.getDeepSleepTime() != 0;
 }
 
 void ClockSleep::loop(unsigned long now) {

@@ -5,13 +5,10 @@
 #include "../../utils/PowerManager.hpp"
 #include "../StateManager.hpp"
 
-#define DEEP_SLEEP_TIME 3600
 #define SLEEP_LIGHT_LEVEL 20
 
 void ClockDeepSleep::reload() {
-    if (timeManager.needDeepSleep()) {
-        deepSleepTimer = DEEP_SLEEP_TIME;
-    }
+    deepSleepTimer = timeManager.getDeepSleepTime();
     isNeedView = false;
 }
 
@@ -34,9 +31,8 @@ void ClockDeepSleep::loop() {
         powerManager.powerOff(1);
     } else {
         timeManager.reload(millis());
-        if (timeManager.needDeepSleep()) {
-            deepSleepTimer = DEEP_SLEEP_TIME;
-        } else {
+        deepSleepTimer = timeManager.getDeepSleepTime();
+        if (deepSleepTimer == 0) {
             manager->switchToSleepState();
             return;
         }

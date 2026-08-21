@@ -14,6 +14,9 @@ void PowerManager::buzzer() {
 }
 
 void PowerManager::sleep(unsigned long sleepTime) {
+#ifdef DEBUG
+    delay(sleepTime);
+#else
     const unsigned long start = millis();
     while (millis() - start < sleepTime) {
         if (millis() - buzzerTime < 1000) {
@@ -24,8 +27,13 @@ void PowerManager::sleep(unsigned long sleepTime) {
                           TIMER0_ON, SPI_OFF, USART0_OFF, TWI_OFF);
         }
     }
+#endif
 }
 
 void PowerManager::powerOff(unsigned long sleepTime) {
+#ifdef DEBUG
+    delay(sleepTime * 1000);
+#else
     LowPower.powerDown(SLEEP_1S, ADC_OFF, BOD_OFF);
+#endif
 }

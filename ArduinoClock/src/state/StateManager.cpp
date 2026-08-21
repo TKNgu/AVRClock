@@ -14,7 +14,8 @@ StateManager::StateManager() {
 void StateManager::setup() {
     State::manager = this;
     HardwareInit();
-    switchToDefaultState();
+    // switchToDefaultState();
+    switchToSleepState();
 }
 
 void StateManager::loop() { currentState->loop(); }

@@ -4,7 +4,9 @@ StateManager stateManager;
 
 void setup() {
   stateManager.setup();
-  // Serial.begin(9600);
+#ifdef DEBUG
+  Serial.begin(9600);
+#endif
 }
 
 void loop() {

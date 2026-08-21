@@ -35,7 +35,7 @@ class TimeManagerAdvance : public TimeManager {
     TimeManagerAdvance();
 
     bool needSleep();
-    bool needDeepSleep();
+    unsigned int getDeepSleepTime();
 
   private:
     unsigned int dynamicSleepTime;

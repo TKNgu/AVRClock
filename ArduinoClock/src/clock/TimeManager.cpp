@@ -90,33 +90,31 @@ void TimeManager::setDayOfWeek(unsigned char value) {
 #define WAKE_HOUR 5
 #define WAKE_MINUTE 00
 #define DEEP_SLEEP_WAIT_TIME 30
+#define DEEP_SLEEP_TIME 3600
 
 static const unsigned int wakeUpTime = WAKE_HOUR * 60 + WAKE_MINUTE;
 static const unsigned int sleepTime = SLEEP_HOUR * 60 + SLEEP_MINUTE;
-
-static bool inInterval(unsigned int T, unsigned int start, unsigned int end) {
-    if (start <= end) {
-        return T >= start && T < end;
-    } else {
-        return T >= start || T < end;
-    }
-}
+static const unsigned int deepSleepTime =
+    WAKE_HOUR * 60 + WAKE_MINUTE - DEEP_SLEEP_WAIT_TIME;
 
 TimeManagerAdvance::TimeManagerAdvance() { dynamicSleepTime = sleepTime; }
 
 bool TimeManagerAdvance::needSleep() {
     const unsigned int tmp = hour * 60 + minutes;
-
-    unsigned int safeResetTimeEnd = (sleepTime + 24 * 60 - 60) % (24 * 60);
-    if (inInterval(tmp, wakeUpTime, safeResetTimeEnd)) {
-        dynamicSleepTime = sleepTime;
+    if (tmp < wakeUpTime) {
+        return true;
     }
-
-    return inInterval(tmp, dynamicSleepTime, wakeUpTime);
+    return tmp > sleepTime;
 }
 
-bool TimeManagerAdvance::needDeepSleep() {
+unsigned int TimeManagerAdvance::getDeepSleepTime() {
     const unsigned int tmp = hour * 60 + minutes;
-    const unsigned int remainingTime = (wakeUpTime + 24 * 60 - tmp) % (24 * 60);
-    return remainingTime > DEEP_SLEEP_WAIT_TIME;
+    if (tmp > sleepTime) {
+        return DEEP_SLEEP_TIME;
+    }
+    if (tmp > deepSleepTime) {
+        return 0;
+    }
+    const unsigned int delta = (deepSleepTime - tmp) * 60;
+    return (delta > DEEP_SLEEP_TIME) ? DEEP_SLEEP_TIME : delta;
 }
