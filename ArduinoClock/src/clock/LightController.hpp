@@ -14,7 +14,6 @@ struct MovingMaxFilter {
     };
     unsigned valueMaxIndex = 0;
 
-    MovingMaxFilter();
     float getMovingMax();
     float addValue(unsigned);
 };

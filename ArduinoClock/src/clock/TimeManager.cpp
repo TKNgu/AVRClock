@@ -4,7 +4,6 @@
 
 #include "../utils/Utils.hpp"
 
-#define WAIT_SLEEP_TIME 300000
 #define UPDATE_TIME_TASK 3600000
 
 TimeManager::TimeManager() : syncTimer(CreateTimer(UPDATE_TIME_TASK)) {}

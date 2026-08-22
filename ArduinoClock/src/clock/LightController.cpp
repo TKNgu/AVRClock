@@ -1,34 +1,22 @@
 #include "LightController.hpp"
 
 #include <Arduino.h>
-#include <EEPROM.h>
 
+#include "../utils/Storage.hpp"
 #include "../utils/Utils.hpp"
 
 #define LIGHT_LEVEL_WARNING 30
-#define MAX_LIGHT_LEVEL 1000
-
-MovingMaxFilter::MovingMaxFilter() {
-    for (unsigned index = 0; index < SIZE_ITEM; index++) {
-        const unsigned offset = index * sizeof(unsigned);
-        EEPROM.get(offset, valueMax[index]);
-        if (valueMax[index] > MAX_LIGHT_LEVEL) {
-            valueMax[index] = 0;
-        }
-    }
-    EEPROM.get(SIZE_ITEM * sizeof(unsigned), valueMaxIndex);
-}
 
 float MovingMaxFilter::addValue(unsigned value) {
     valueMaxIndex++;
     if (valueMaxIndex >= SIZE_ITEM) {
         valueMaxIndex = 0;
     }
-    EEPROM.put(SIZE_ITEM * sizeof(unsigned), valueMaxIndex);
+    storage.saveLightIndex(valueMaxIndex);
 
     if (valueMax[valueMaxIndex] != value) {
         valueMax[valueMaxIndex] = value;
-        EEPROM.put(valueMaxIndex * sizeof(unsigned), value);
+        storage.saveLightValue(valueMaxIndex, value);
     }
     return getMovingMax();
 }
@@ -43,6 +31,7 @@ float MovingMaxFilter::getMovingMax() {
 }
 
 LightController::LightController() : movingMaxFilter() {
+    storage.loadLight(&movingMaxFilter);
     maxLightGlobal = movingMaxFilter.getMovingMax();
 }
 
